@@ -25,27 +25,5 @@ El proyecto está construido utilizando las siguientes tecnologías principales:
 - **[jsPDF](https://parall.ax/products/jspdf) & jsPDF-AutoTable**: Utilizados para la generación y descarga de presupuestos y recibos directamente en formato PDF.
 - **[XLSX](https://sheetjs.com/)**: Lectura y exportación de datos en hojas de cálculo (Excel).
 
-## 🛠️ Instalación y Uso Local
 
-1. Clona el repositorio:
-   ```bash
-   git clone https://github.com/Trees25/WebTrees.git
-   ```
-
-2. Ingresa a la carpeta del cliente:
-   ```bash
-   cd WebTrees/client
-   ```
-
-3. Instala las dependencias:
-   ```bash
-   npm install
-   ```
-
-4. Configura las variables de entorno:
-   Crea un archivo `.env` en la carpeta `client` basándote en los requerimientos de Supabase de tu entorno.
-
-5. Ejecuta el servidor de desarrollo:
-   ```bash
-   npm run dev
    ```
