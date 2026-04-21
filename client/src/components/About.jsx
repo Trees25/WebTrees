@@ -136,7 +136,7 @@ export default function About() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 items-stretch justify-items-center">
             <TeamCard
               name="Juan Mondre"
-              title="Desarrollador FullStack"
+              title="Analista de sistema"
               handle="juanmondre"
               avatarUrl={Juan_Mondre}
               link="https://linktr.ee/JuanMondre"
