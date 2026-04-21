@@ -24,6 +24,3 @@ El proyecto está construido utilizando las siguientes tecnologías principales:
 - **[Recharts](https://recharts.org/)**: Generación de gráficos y estadísticas visuales para los paneles de resumen.
 - **[jsPDF](https://parall.ax/products/jspdf) & jsPDF-AutoTable**: Utilizados para la generación y descarga de presupuestos y recibos directamente en formato PDF.
 - **[XLSX](https://sheetjs.com/)**: Lectura y exportación de datos en hojas de cálculo (Excel).
-
-
-   ```
