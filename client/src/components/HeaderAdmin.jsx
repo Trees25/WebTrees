@@ -2,8 +2,6 @@ import React from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import logoTrees from "../assets/logo_dark.png";
-
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,7 +16,7 @@ export default function Header() {
             onClick={() => navigate("/admin")}
           >
             <img
-              src={logoTrees}
+              src="/assets/logo.png"
               alt="Logo Trees"
               className="h-10 w-auto"
             />

@@ -2,19 +2,23 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Layers, Smartphone, Monitor } from "lucide-react";
 
-import molinautosLogo from "../assets/molinautos_logo.webp";
-import biscuiLogo from "../assets/Biscui_logo.webp";
-import ilcapitanoLogo from "../assets/Ilcapitano_logo.webp";
-import mipanaleraLogo from "../assets/MiPañalera_logo.webp";
-import asocsarLogo from "../assets/AsocSar_logo-1.webp";
+import molinautos1 from "../assets/molinaautos1.webp";
+import anti_robo_auto from "../assets/anti-robo-auto.webp";
+import kaiserjagger1 from "../assets/kaiserjagger.webp";
+import pos_ventaLogo from "../assets/posventa1.webp";
+import sistNN from "../assets/sist_nn_lubri.webp";
+import sist_cortineria from "../assets/sist_cortineria.webp";
+import sist_allpack from "../assets/sist_allpack.webp";
 
 // Datos combinados simulados
 const allProjects = [
-  { id: 1, title: "Biscui", category: "Páginas Web", imgSrc: biscuiLogo, link: "#" },
-  { id: 2, title: "Il Capitano", category: "Páginas Web", imgSrc: ilcapitanoLogo, link: "#" },
-  { id: 3, title: "Mi Pañalera", category: "Páginas Web", imgSrc: mipanaleraLogo, link: "#" },
-  { id: 4, title: "Molina Autos", category: "Aplicación Web", imgSrc: molinautosLogo, link: "https://molinaautos.com" },
-  { id: 5, title: "Asociación Sanjuanina", category: "Sistemas Personalizados", imgSrc: asocsarLogo, link: "#" },
+  { id: 1, title: "Portafolio - KaiserJagger", category: "Páginas Web", imgSrc: kaiserjagger1, link: "https://kaiserjagger.com", status: "Finalizado" },
+  { id: 2, title: "Landing Page - Anti-Robo-Auto", category: "Páginas Web", imgSrc: anti_robo_auto, link: "#", status: "Finalizado" },
+  { id: 3, title: "Landing Page - Molina Autos", category: "Sistemas Personalizados", imgSrc: molinautos1, link: "https://molinaautos.com", status: "Finalizado" },
+  { id: 4, title: "Pos Venta", category: "Aplicación Web", imgSrc: pos_ventaLogo, link: "#", status: "En Desarrollo" },
+  { id: 5, title: "Sistema de Gestion de Stock - NN Lubricentro", category: "Sistemas Personalizados", imgSrc: sistNN, link: "#", status: "En Desarrollo" },
+  { id: 6, title: "Generador de Presupuestos - Cortineria San Juan", category: "Sistemas Personalizados", imgSrc: sist_cortineria, link: "#", status: "Finalizado" },
+  { id: 7, title: "Sistema POS/ERP con Facturación (ARCA) - Allpack", category: "Aplicación Web", imgSrc: sist_allpack, link: "#", status: "Finalizado" },
 ];
 
 const categories = ["Todos", "Páginas Web", "Aplicación Web", "Sistemas Personalizados"];
@@ -70,8 +74,8 @@ export default function Projects() {
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all duration-300 ${isActive
-                    ? "bg-[#5EADF2] text-[#101726] shadow-[0_0_20px_rgba(94,173,242,0.4)]"
-                    : "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white border border-white/10"
+                  ? "bg-[#5EADF2] text-[#101726] shadow-[0_0_20px_rgba(94,173,242,0.4)]"
+                  : "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white border border-white/10"
                   }`}
               >
                 {categoryIcons[cat]}
@@ -117,7 +121,7 @@ export default function Projects() {
                         </a>
                       ) : (
                         <span className="inline-block text-sm font-bold text-gray-400 bg-white/10 px-5 py-2.5 rounded-xl">
-                          En desarrollo
+                          {project.status}
                         </span>
                       )}
                     </div>

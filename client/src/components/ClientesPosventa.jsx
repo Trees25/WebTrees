@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { supabasePosventa, authenticatePosventa } from "../lib/supabasePosventa";
-import { supabase } from "../lib/supabase";
-import Header from "./HeaderAdmin";
+import { supabasePosventa, authenticatePosventa } from "../supabasePosventa";
+import { supabase } from "../supabase";
+import Header from "./Header";
 import { useNavigate } from "react-router-dom";
 
 export default function ClientesPosventa() {

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./Home";
@@ -14,10 +15,25 @@ import Estadisticas from "./components/Estadisticas";
 import Catalogo from "./components/Catalogo";
 import Resumen from "./components/Resumen";
 import Perfiles from "./components/Perfiles";
-import ClientesPosventa from "./components/ClientesPosventa";
 export default function App() {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith("/admin");
+
+  // Este efecto hace que los links con "#" (ej: /#servicios) hagan scroll suave hacia la sección
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const id = location.hash.replace("#", "");
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } else if (location.pathname === "/") {
+      // Si navegamos a "Inicio" (/) sin hash, scrolleamos arriba de todo
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [location.pathname, location.hash]);
 
   return (
     <div className="min-h-dvh flex flex-col w-full bg-[#101726] text-white">
@@ -97,14 +113,6 @@ export default function App() {
             element={
               <PrivateRoute>
                 <Estadisticas />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/clientes-posventa"
-            element={
-              <PrivateRoute>
-                <ClientesPosventa />
               </PrivateRoute>
             }
           />

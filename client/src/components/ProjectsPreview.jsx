@@ -57,11 +57,8 @@ export default function ProjectsPreview() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-[#5EADF2] font-bold tracking-widest uppercase text-sm">
-            Nuestro Trabajo
-          </span>
           <h2 className="text-4xl md:text-5xl font-black text-white mt-2 mb-6">
-            Proyectos Destacados
+            Nuestros Trabajos
           </h2>
           <div className="w-24 h-1.5 bg-[#5EADF2] mx-auto rounded-full opacity-80" />
         </motion.div>
@@ -120,7 +117,7 @@ export default function ProjectsPreview() {
             to="/proyectos"
             className="group flex items-center gap-3 px-8 py-4 bg-transparent border-2 border-[#5EADF2] text-[#5EADF2] font-semibold rounded-2xl hover:bg-[#5EADF2] hover:text-[#101726] transition-all duration-300 shadow-[0_0_0_transparent] hover:shadow-[0_0_30px_rgba(94,173,242,0.3)]"
           >
-            Explorar todo el Portafolio
+            Presiona aqui para poder ver nuestro trabajo
             <ArrowRight
               size={20}
               className="transform transition-transform group-hover:translate-x-1"
