@@ -84,8 +84,8 @@ export default function Home() {
 
       {/* =========================================
           SECCIÓN 4: PROJECTS (Scroll abajo)
-      ========================================= 
-      <ProjectsPreview />*/}
+      ========================================= */}
+      <ProjectsPreview />
 
       {/* =========================================
           SECCIÓN 5: Clients (Scroll abajo)

@@ -15,6 +15,7 @@ import Estadisticas from "./components/Estadisticas";
 import Catalogo from "./components/Catalogo";
 import Resumen from "./components/Resumen";
 import Perfiles from "./components/Perfiles";
+import ScrollToTop from "./hooks/scrooltop";
 export default function App() {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith("/admin");
@@ -38,7 +39,7 @@ export default function App() {
   return (
     <div className="min-h-dvh flex flex-col w-full bg-[#101726] text-white">
       {!isAdminPath && <Navbar />}
-
+      <ScrollToTop />
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
