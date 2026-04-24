@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /perfil-usuario
+Disallow: /clientes
+Disallow: /presupuesto
+Disallow: /recibo
+Disallow: /resumen
+Disallow: /perfiles
+Disallow: /estadisticas
+
+Sitemap: https://www.treestech.dev/sitemap.xml
