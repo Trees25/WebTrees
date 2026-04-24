@@ -1,29 +1,33 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import ReactGA from "react-ga4";
 
-// 👇 ACÁ PEGÁ TU ID DE MEDICIÓN DE GOOGLE (ej: "G-A1B2C3D4")
-// Si no tenés uno, andá a analytics.google.com -> Admin -> Data Streams
 const TRACKING_ID = "G-GV0CYC9F8N";
-
-ReactGA.initialize(TRACKING_ID);
 
 const AnalyticsTracker = () => {
   const location = useLocation();
+  const isInitialized = useRef(false);
 
   useEffect(() => {
-    // Esto se ejecuta cada vez que la ruta (location) cambia
-    ReactGA.send({
-      hitType: "pageview",
-      page: location.pathname + location.search,
-      title: document.title,
-    });
+    // Retrasar 2.5 segundos para sacar a Google Analytics de la métrica LCP
+    const timer = setTimeout(() => {
+      if (!isInitialized.current) {
+        ReactGA.initialize(TRACKING_ID);
+        isInitialized.current = true;
+      }
 
-    // Opcional: Un console.log para ver si funciona mientras desarrollás
-    console.log(`📡 Enviando página a Google: ${location.pathname}`);
+      ReactGA.send({
+        hitType: "pageview",
+        page: location.pathname + location.search,
+        title: document.title,
+      });
+    }, 2500);
+
+    // Limpiar el timer si el componente se desmonta rápido o el usuario cambia de ruta antes
+    return () => clearTimeout(timer);
   }, [location]);
 
-  return null; // Este componente no muestra nada visual, es invisible.
+  return null;
 };
 
 export default AnalyticsTracker;
