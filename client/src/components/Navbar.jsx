@@ -25,7 +25,12 @@ export default function Navbar() {
   // Calculamos el índice activo leyendo la URL real
   const calculatedIndex = navItems.findIndex((item) => {
     // Si estamos en home sin ancla, marca Inicio
-    if (location.pathname === "/" && location.hash === "" && item.name === "Inicio") return true;
+    if (
+      location.pathname === "/" &&
+      location.hash === "" &&
+      item.name === "Inicio"
+    )
+      return true;
     // Si coincide exacto (ej. /#servicios o /proyectos)
     if (item.href === location.pathname + location.hash) return true;
     // Si coincide solo la ruta principal
@@ -108,10 +113,11 @@ export default function Navbar() {
 
                   <Link
                     to={item.href}
-                    className={`relative z-10 px-4 py-2 block text-sm font-bold transition-colors duration-300 ${isActive
-                      ? "text-[#101726]"
-                      : "text-gray-300 hover:text-white"
-                      }`}
+                    className={`relative z-10 px-4 py-2 block text-sm font-bold transition-colors duration-300 ${
+                      isActive
+                        ? "text-[#101726]"
+                        : "text-gray-300 hover:text-white"
+                    }`}
                   >
                     {item.name}
                   </Link>
@@ -125,7 +131,7 @@ export default function Navbar() {
             <div className="md:hidden">
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" aria-label="Menu">
                     <Menu className="h-6 w-6" />
                   </Button>
                 </SheetTrigger>
