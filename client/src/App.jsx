@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./Home";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRouter";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./hooks/scrooltop";
 const Projects = lazy(() => import("./pages/Projects"));
 const Admin = lazy(() => import("./components/Admin"));
 const Login = lazy(() => import("./components/Login"));
