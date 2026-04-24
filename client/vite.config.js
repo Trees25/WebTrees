@@ -11,24 +11,13 @@ export default defineConfig({
     },
   },
   build: {
-    assetsInlineLimit: 30000, // Tu configuración previa para la fuente
+    assetsInlineLimit: 30000,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
-            // Separa React y React DOM
-            if (id.includes("react/") || id.includes("react-dom/")) {
-              return "vendor-react";
-            }
-            // Separa el enrutador
-            if (id.includes("react-router")) {
-              return "vendor-router";
-            }
-            // Separa iconos pesados si usas Lucide o similares (ajústalo si usas otra librería)
-            if (id.includes("lucide-react")) {
-              return "vendor-icons";
-            }
-            // Agrupa el resto de librerías de terceros
+            // Agrupa TODAS las dependencias en un solo archivo "vendor".
+            // Esto reduce las peticiones HTTP a la mitad en comparación con la configuración anterior.
             return "vendor";
           }
         },
