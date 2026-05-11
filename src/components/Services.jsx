@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Globe, Laptop, Smartphone, Wrench } from "lucide-react";
+import { Globe, Laptop, Smartphone, Wrench, Bot } from "lucide-react";
 // Variantes para la orquestación en cascada
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -33,7 +33,7 @@ const ServiceItem = ({ icon, title, description }) => (
       boxShadow: "0 25px 50px -12px rgba(94, 173, 242, 0.15)",
       borderColor: "rgba(94, 173, 242, 0.3)",
     }}
-    className="relative group bg-[#162032] p-8 rounded-3xl shadow-xl border border-white/5 flex flex-col items-center text-center transition-colors duration-300 h-full"
+    className="relative group bg-[#162032] p-8 rounded-3xl shadow-xl border border-white/5 flex flex-col items-center text-center transition-colors duration-300 h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1rem)] max-w-sm"
   >
     {/* 2. Aplicamos el color celeste (text-[#5EADF2]) al contenedor. 
         Los íconos de Lucide usan "currentColor", así que absorberán este color automáticamente */}
@@ -84,12 +84,17 @@ const Services = () => (
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }} // Dispara un poco antes de verlas completas
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto"
+        className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto"
       >
         <ServiceItem
           icon={<Globe className=" w-10 h-10" strokeWidth={1.5} />}
           title="Desarrollo Web"
           description="Diseñamos sitios web modernos, rápidos y optimizados para destacar tu marca en internet."
+        />
+        <ServiceItem
+          icon={<Bot className=" w-10 h-10" strokeWidth={1.5} />}
+          title="Automatizaciones con IA"
+          description="Implementamos soluciones de inteligencia artificial para automatizar procesos y optimizar tiempos."
         />
         <ServiceItem
           icon={<Laptop className=" w-10 h-10" strokeWidth={1.5} />}

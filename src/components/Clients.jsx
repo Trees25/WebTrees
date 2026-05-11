@@ -7,7 +7,6 @@ import biscuiLogo from '../assets/Biscui_logo.webp';
 import ilCapitanoLogo from '../assets/Ilcapitano_logo.webp';
 import miPanaleraLogo from '../assets/MiPañalera_logo.webp';
 import molinautosLogo from '../assets/molinautos_logo.webp';
-import treesLogo from '../assets/Trees_logo.webp';
 import logoNN from "../assets/logoNNLubri.webp";
 import AllPackLogo from "../assets/AllPack_logo.webp";
 import logo_cortineria from "../assets/logo_cortineria.webp";
@@ -18,7 +17,6 @@ const clients = [
   { id: 3, src: ilCapitanoLogo, alt: "Il Capitano" },
   { id: 4, src: miPanaleraLogo, alt: "Mi Pañalera" },
   { id: 5, src: molinautosLogo, alt: "Molinautos" },
-  { id: 6, src: treesLogo, alt: "WEB-TREES" },
   { id: 7, src: logoNN, alt: "NN Lubricentro" },
   { id: 8, src: AllPackLogo, alt: "Allpack" },
   { id: 9, src: logo_cortineria, alt: "Cortineria" },

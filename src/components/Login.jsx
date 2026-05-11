@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/Trees_logo.webp";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -49,9 +50,9 @@ export default function Login() {
       <div className="max-w-md w-full">
         <div className="text-center mb-10">
           <img
-            src="/assets/logo.png"
+            src={logo}
             alt="Logo"
-            className="w-48 mx-auto mb-6 opacity-90 invert grayscale contrast-200 mix-blend-screen"
+            className="w-48 mx-auto mb-6 opacity-90"
           />
           <h2 className="text-2xl font-bold text-white">Bienvenido de nuevo</h2>
           <p className="text-slate-400 mt-2">
