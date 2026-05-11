@@ -120,7 +120,7 @@ export default function Perfiles() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
       <Header />
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">

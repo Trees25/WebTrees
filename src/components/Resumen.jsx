@@ -246,7 +246,7 @@ export default function Resumen() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12">
+    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
       <Header />
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">

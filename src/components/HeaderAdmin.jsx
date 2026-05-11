@@ -1,6 +1,7 @@
 import React from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate, useLocation } from "react-router-dom";
+import logo from "../assets/Trees_logo.webp";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -16,9 +17,9 @@ export default function Header() {
             onClick={() => navigate("/admin")}
           >
             <img
-              src="/assets/logo.png"
+              src={logo}
               alt="Logo Trees"
-              className="h-10 w-auto"
+              className="h-10 w-auto brightness-0"
             />
           </div>
 
