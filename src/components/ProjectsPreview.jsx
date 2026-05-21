@@ -1,28 +1,10 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ExternalLink, ArrowRight } from "lucide-react";
+import { allProjects } from "../data/projects.js";
 
-import anti_robo_autoLogo from "../assets/anti-robo-auto.webp";
-import certibankosLogo from "../assets/certibankos.webp";
-import molinautosLogo from "../assets/molinaautos1.webp";
-
-const projects = [
-  {
-    id: 1,
-    title: "Anti-Robo-Auto",
-    imgSrc: anti_robo_autoLogo,
-  },
-  {
-    id: 2,
-    title: "CertibankOS",
-    imgSrc: certibankosLogo,
-  },
-  {
-    id: 3,
-    title: "Molina Autos",
-    imgSrc: molinautosLogo,
-  },
-];
+// Filtramos CertibankOS (id: 2) y Molina Autos (id: 3) para la previsualización
+const projects = allProjects.filter((p) => p.id === 2 || p.id === 3);
 
 const containerVariants = {
   hidden: { opacity: 0 },

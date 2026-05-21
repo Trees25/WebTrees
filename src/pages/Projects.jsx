@@ -1,29 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Layers, Smartphone, Monitor } from "lucide-react";
-
-import molinautos1 from "../assets/molinaautos1.webp";
-import anti_robo_auto from "../assets/anti-robo-auto.webp";
-import kaiserjagger1 from "../assets/kaiserjagger.webp";
-import pos_ventaLogo from "../assets/posventa1.webp";
-import sistNN from "../assets/sist_nn_lubri.webp";
-import sist_cortineria from "../assets/sist_cortineria.webp";
-import sist_allpack from "../assets/sist_allpack.webp";
-import turnos_web from "../assets/turnos_web.webp";
-import Autora from "../assets/autora.webp";
-
-// Datos combinados simulados
-const allProjects = [
-  { id: 1, title: "Portafolio - KaiserJagger", category: "Páginas Web", imgSrc: kaiserjagger1, link: "https://kaiserjagger.com", status: "Finalizado" },
-  { id: 2, title: "Landing Page - Anti-Robo-Auto", category: "Páginas Web", imgSrc: anti_robo_auto, link: "#", status: "Finalizado" },
-  { id: 3, title: "Landing Page - Molina Autos", category: "Sistemas Personalizados", imgSrc: molinautos1, link: "https://molinaautos.com", status: "Finalizado" },
-  { id: 4, title: "Pos Venta", category: "Aplicación Web", imgSrc: pos_ventaLogo, link: "#", status: "En Desarrollo" },
-  { id: 5, title: "Sistema de Gestion de Stock - NN Lubricentro", category: "Sistemas Personalizados", imgSrc: sistNN, link: "#", status: "En Desarrollo" },
-  { id: 6, title: "Generador de Presupuestos - Cortineria San Juan", category: "Sistemas Personalizados", imgSrc: sist_cortineria, link: "#", status: "Finalizado" },
-  { id: 7, title: "Sistema POS/ERP con Facturación (ARCA) - Allpack", category: "Aplicación Web", imgSrc: sist_allpack, link: "#", status: "Finalizado" },
-  { id: 8, title: "Sistema de Turnos Laborales", category: "Aplicación Web", imgSrc: turnos_web, link: "#", status: "Finalizado" },
-  { id: 9, title: "Autora - Sistema de Gestion para Agencias", category: "Aplicación Web", imgSrc: Autora, link: "https://autora-sable.vercel.app/", status: "Finalizado" },
-];
+import { allProjects } from "../data/projects.js";
 
 const categories = ["Todos", "Páginas Web", "Aplicación Web", "Sistemas Personalizados"];
 
