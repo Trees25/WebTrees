@@ -1,4 +1,4 @@
-import molinautos1 from "../assets/molinaautos1.webp";
+//import molinautos1 from "../assets/molinaautos1.webp";
 import kaiserjagger1 from "../assets/kaiserjagger.webp";
 import pos_ventaLogo from "../assets/posventa1.webp";
 import sistNN from "../assets/sist_nn_lubri.webp";
@@ -26,15 +26,6 @@ export const allProjects = [
     link: "https://certibankos.com",
     status: "Finalizado",
     featured: false,
-  },
-  {
-    id: 3,
-    title: "Landing Page - Molina Autos",
-    category: "Sistemas Personalizados",
-    imgSrc: molinautos1,
-    link: "https://molinaautos.com",
-    status: "Finalizado",
-    featured: true,
   },
   {
     id: 4,
