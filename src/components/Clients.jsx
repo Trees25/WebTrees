@@ -1,15 +1,16 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 // Imágenes de los clientes (asegúrate de que correspondan a /assets/)
-import asocSarLogo from '../assets/AsocSar_logo-1.webp';
-import biscuiLogo from '../assets/Biscui_logo.webp';
-import ilCapitanoLogo from '../assets/Ilcapitano_logo.webp';
-import miPanaleraLogo from '../assets/MiPañalera_logo.webp';
-import molinautosLogo from '../assets/molinautos_logo.webp';
+import asocSarLogo from "../assets/AsocSar_logo-1.webp";
+import biscuiLogo from "../assets/Biscui_logo.webp";
+import ilCapitanoLogo from "../assets/Ilcapitano_logo.webp";
+import miPanaleraLogo from "../assets/MiPañalera_logo.webp";
+import molinautosLogo from "../assets/molinautos_logo.webp";
 import logoNN from "../assets/logoNNLubri.webp";
 import AllPackLogo from "../assets/AllPack_logo.webp";
 import logo_cortineria from "../assets/logo_cortineria.webp";
+import excellenceLogo from "../assets/logo_excellence.webp";
 
 const clients = [
   { id: 1, src: asocSarLogo, alt: "Asociación Sanjuanina" },
@@ -20,6 +21,7 @@ const clients = [
   { id: 7, src: logoNN, alt: "NN Lubricentro" },
   { id: 8, src: AllPackLogo, alt: "Allpack" },
   { id: 9, src: logo_cortineria, alt: "Cortineria" },
+  { id: 10, src: excellenceLogo, alt: "Excellence CEI" },
 ];
 
 export default function Clients() {
@@ -27,7 +29,10 @@ export default function Clients() {
   const duplicatedClients = [...clients, ...clients];
 
   return (
-    <section id="clientes" className="py-24 bg-[#101726] relative z-10 scroll-mt-10 overflow-hidden">
+    <section
+      id="clientes"
+      className="py-24 bg-[#101726] relative z-10 scroll-mt-10 overflow-hidden"
+    >
       <div className="container mx-auto px-4">
         {/* Título de la Sección */}
         <motion.div
@@ -47,16 +52,15 @@ export default function Clients() {
 
         {/* Carrusel Contenedor */}
         <div className="relative max-w-6xl mx-auto overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-16 md:before:w-32 before:bg-gradient-to-r before:from-[#101726] before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-16 md:after:w-32 after:bg-gradient-to-l after:from-[#101726] after:to-transparent">
-
           {/* Pista del Carrusel (Framer Motion) */}
           <motion.div
             className="flex items-center gap-10 w-max"
             animate={{
-              x: ["0%", "-50%"]
+              x: ["0%", "-50%"],
             }}
             transition={{
               ease: "linear",
-              duration: 20,  // Velocidad de scroll
+              duration: 20, // Velocidad de scroll
               repeat: Infinity,
             }}
           >
