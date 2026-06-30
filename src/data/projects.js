@@ -1,4 +1,4 @@
-import molinautos1 from "../assets/molinaautos1.webp";
+//import molinautos1 from "../assets/molinaautos1.webp";
 import kaiserjagger1 from "../assets/kaiserjagger.webp";
 import pos_ventaLogo from "../assets/posventa1.webp";
 import sistNN from "../assets/sist_nn_lubri.webp";
@@ -7,7 +7,7 @@ import sist_allpack from "../assets/sist_allpack.webp";
 import turnos_web from "../assets/turnos_web.webp";
 import Autora from "../assets/autora.webp";
 import certibankosLogo from "../assets/certibankos.webp";
-
+import Excellence from "../assets/Excellence.webp";
 export const allProjects = [
   {
     id: 1,
@@ -26,15 +26,6 @@ export const allProjects = [
     link: "https://certibankos.com",
     status: "Finalizado",
     featured: false,
-  },
-  {
-    id: 3,
-    title: "Landing Page - Molina Autos",
-    category: "Sistemas Personalizados",
-    imgSrc: molinautos1,
-    link: "https://molinaautos.com",
-    status: "Finalizado",
-    featured: true,
   },
   {
     id: 4,
@@ -83,12 +74,20 @@ export const allProjects = [
   },
   {
     id: 9,
-    title: "Autora - Sistema de Gestion para Agencias",
+    title: "Sistema de Gestion para Agencias - Autora",
     category: "Aplicación Web",
     imgSrc: Autora,
     link: "https://autora-sable.vercel.app/",
     status: "Finalizado",
     featured: false,
   },
-
+  {
+    id: 10,
+    title: "Landing de estetica y academia - Excellence",
+    category: "Aplicación Web",
+    imgSrc: Excellence,
+    link: "https://excellencecei.com/",
+    status: "Finalizado",
+    featured: false,
+  },
 ];
