@@ -15,6 +15,8 @@ import Estadisticas from "./components/Estadisticas";
 import Catalogo from "./components/Catalogo";
 import Resumen from "./components/Resumen";
 import Perfiles from "./components/Perfiles";
+import AdminProyectos from "./components/AdminProyectos";
+import AdminPersonal from "./components/AdminPersonal";
 export default function App() {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith("/admin");
@@ -49,6 +51,22 @@ export default function App() {
             element={
               <PrivateRoute>
                 <Admin />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-proyectos"
+            element={
+              <PrivateRoute>
+                <AdminProyectos />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin-personal"
+            element={
+              <PrivateRoute>
+                <AdminPersonal />
               </PrivateRoute>
             }
           />
