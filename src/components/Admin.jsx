@@ -199,6 +199,27 @@ export default function Admin() {
               </p>
             </div>
           </div>
+
+          <div
+            className="group relative bg-white p-6 rounded-2xl shadow-sm border border-slate-100 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
+            onClick={() => navigate("/admin-balance")}
+          >
+            <div className="absolute top-6 right-6 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+            </div>
+            <div className="relative">
+              <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                📈
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-1">
+                Balance Mensual
+              </h3>
+              <p className="text-sm text-slate-600">
+                Reportes y gráficos de ingresos y egresos
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

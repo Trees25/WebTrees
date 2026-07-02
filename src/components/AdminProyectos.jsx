@@ -12,6 +12,7 @@ export default function AdminProyectos() {
   const [nuevoProyecto, setNuevoProyecto] = useState({
     nombre: "",
     estado: "en_desarrollo",
+    tipo_proyecto: "Otro",
     valor_total: 0,
     mensualidad: 0,
     fecha_limite: "",
@@ -114,6 +115,7 @@ export default function AdminProyectos() {
       const { error } = await supabase.from("proyectos").update({
         nombre: nuevoProyecto.nombre,
         estado: nuevoProyecto.estado,
+        tipo_proyecto: nuevoProyecto.tipo_proyecto,
         valor_total: nuevoProyecto.valor_total,
         mensualidad: nuevoProyecto.mensualidad,
         fecha_limite: nuevoProyecto.fecha_limite || null,
@@ -139,6 +141,7 @@ export default function AdminProyectos() {
       const { data: proyAgregado, error } = await supabase.from("proyectos").insert([{
         nombre: nuevoProyecto.nombre,
         estado: nuevoProyecto.estado,
+        tipo_proyecto: nuevoProyecto.tipo_proyecto,
         valor_total: nuevoProyecto.valor_total,
         mensualidad: nuevoProyecto.mensualidad,
         fecha_limite: nuevoProyecto.fecha_limite || null,
@@ -165,7 +168,7 @@ export default function AdminProyectos() {
 
   const resetFormProyecto = () => {
     setNuevoProyecto({
-      nombre: "", estado: "en_desarrollo", valor_total: 0, mensualidad: 0, fecha_limite: "", cliente_id: "", desarrolladores_ids: []
+      nombre: "", estado: "en_desarrollo", tipo_proyecto: "Otro", valor_total: 0, mensualidad: 0, fecha_limite: "", cliente_id: "", desarrolladores_ids: []
     });
     setNuevoClienteMode(false);
     setNuevoDevMode(false);
@@ -183,6 +186,7 @@ export default function AdminProyectos() {
     setNuevoProyecto({
       nombre: proyecto.nombre,
       estado: proyecto.estado,
+      tipo_proyecto: proyecto.tipo_proyecto || "Otro",
       valor_total: proyecto.valor_total,
       mensualidad: proyecto.mensualidad,
       fecha_limite: proyecto.fecha_limite || "",
@@ -288,16 +292,32 @@ export default function AdminProyectos() {
                     required
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Estado</label>
-                  <select
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
-                    value={nuevoProyecto.estado}
-                    onChange={(e) => setNuevoProyecto({ ...nuevoProyecto, estado: e.target.value })}
-                  >
-                    <option value="en_desarrollo">En Desarrollo</option>
-                    <option value="en_produccion">En Producción</option>
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Estado</label>
+                    <select
+                      className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
+                      value={nuevoProyecto.estado}
+                      onChange={(e) => setNuevoProyecto({ ...nuevoProyecto, estado: e.target.value })}
+                    >
+                      <option value="en_desarrollo">En Desarrollo</option>
+                      <option value="en_produccion">En Producción</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Tipo de Proyecto</label>
+                    <select
+                      className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
+                      value={nuevoProyecto.tipo_proyecto}
+                      onChange={(e) => setNuevoProyecto({ ...nuevoProyecto, tipo_proyecto: e.target.value })}
+                    >
+                      <option value="Sistema">Sistema</option>
+                      <option value="Página Web">Página Web</option>
+                      <option value="Aplicación Móvil">Aplicación Móvil</option>
+                      <option value="E-Commerce">E-Commerce</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
                 </div>
                 
                 <div className="pt-2 border-t border-slate-100">
@@ -446,6 +466,11 @@ export default function AdminProyectos() {
                           <span className={`px-2 py-0.5 text-[10px] uppercase font-bold rounded-full ${proyecto.estado === 'en_produccion' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                             {proyecto.estado.replace('_', ' ')}
                           </span>
+                          {proyecto.tipo_proyecto && (
+                            <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                              {proyecto.tipo_proyecto}
+                            </span>
+                          )}
                         </div>
                         <p className="text-sm text-slate-600">Cliente: {proyecto.clientes?.nombre || 'Desconocido'}</p>
                         
