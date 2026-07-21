@@ -151,16 +151,58 @@ export default function Admin() {
 
         <div className="mt-12 mb-6">
           <h3 className="text-xl font-bold text-slate-800 border-b border-slate-200 pb-2">
-            Sistemas Integrados
+            Gestión Interna
           </h3>
           <p className="text-sm text-slate-500 mt-2">
-            Módulos y conexiones con software externo.
+            Administración de proyectos y personal.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
             className="group relative bg-white p-6 rounded-2xl shadow-sm border border-slate-100 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
-            onClick={() => navigate("/clientes-posventa")}
+            onClick={() => navigate("/admin-proyectos")}
+          >
+            <div className="absolute top-6 right-6 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]"></span>
+            </div>
+            <div className="relative">
+              <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                🏗️
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-1">
+                Proyectos
+              </h3>
+              <p className="text-sm text-slate-600">
+                Gestión de proyectos y pagos de clientes
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="group relative bg-white p-6 rounded-2xl shadow-sm border border-slate-100 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
+            onClick={() => navigate("/admin-personal")}
+          >
+            <div className="absolute top-6 right-6 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]"></span>
+            </div>
+            <div className="relative">
+              <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                👨‍💻
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-1">
+                Personal
+              </h3>
+              <p className="text-sm text-slate-600">
+                Registro de pagos a desarrolladores
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="group relative bg-white p-6 rounded-2xl shadow-sm border border-slate-100 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
+            onClick={() => navigate("/admin-balance")}
           >
             <div className="absolute top-6 right-6 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -168,13 +210,13 @@ export default function Admin() {
             </div>
             <div className="relative">
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                ⚙️
+                📈
               </div>
               <h3 className="text-lg font-bold text-slate-800 mb-1">
-                Posventa
+                Balance Mensual
               </h3>
               <p className="text-sm text-slate-600">
-                Suscripciones y clientes del sistema Posventa
+                Reportes y gráficos de ingresos y egresos
               </p>
             </div>
           </div>

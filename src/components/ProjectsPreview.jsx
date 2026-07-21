@@ -65,7 +65,11 @@ export default function ProjectsPreview() {
                 <img
                   src={project.imgSrc}
                   alt={project.title}
-                  className="relative z-10 w-auto h-auto object-cover opacity-80 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-100"
+                  loading="lazy"
+                  decoding="async"
+                  width="600"
+                  height="400"
+                  className="relative z-10 w-full h-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-100"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}

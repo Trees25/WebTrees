@@ -85,6 +85,10 @@ export default function Projects() {
                   <img
                     src={project.imgSrc}
                     alt={project.title}
+                    loading="lazy"
+                    decoding="async"
+                    width="600"
+                    height="400"
                     className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105"
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
