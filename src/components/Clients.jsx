@@ -11,6 +11,7 @@ import logoNN from "../assets/logoNNLubri.webp";
 import AllPackLogo from "../assets/AllPack_logo.webp";
 import logo_cortineria from "../assets/logo_cortineria.webp";
 import excellenceLogo from "../assets/logo_excellence.webp";
+import victormolinaLogo from "../assets/VictorMolina_logo.webp";
 
 const clients = [
   { id: 1, src: asocSarLogo, alt: "Asociación Sanjuanina" },
@@ -22,6 +23,7 @@ const clients = [
   { id: 8, src: AllPackLogo, alt: "Allpack" },
   { id: 9, src: logo_cortineria, alt: "Cortineria" },
   { id: 10, src: excellenceLogo, alt: "Excellence CEI" },
+  { id: 11, src: victormolinaLogo, alt: "Victor Molina" },
 ];
 
 export default function Clients() {
