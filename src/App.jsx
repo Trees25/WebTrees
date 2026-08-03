@@ -18,10 +18,12 @@ import Perfiles from "./components/Perfiles";
 import AdminProyectos from "./components/AdminProyectos";
 import AdminPersonal from "./components/AdminPersonal";
 import AdminBalance from "./components/AdminBalance";
+import NotFound from "./components/NotFound";
 
 export default function App() {
   const location = useLocation();
-  const isAdminPath = location.pathname.startsWith("/admin");
+  const isAdminPath = location.pathname.startsWith("/gestion-interna");
+  const isLoginPath = location.pathname === "/ingreso-privado";
 
   // Este efecto hace que los links con "#" (ej: /#servicios) hagan scroll suave hacia la sección
   useEffect(() => {
@@ -41,15 +43,15 @@ export default function App() {
 
   return (
     <div className="min-h-dvh flex flex-col w-full bg-[#101726] text-white">
-      {!isAdminPath && <Navbar />}
+      {!isAdminPath && !isLoginPath && <Navbar />}
 
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/proyectos" element={<Projects />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/ingreso-privado" element={<Login />} />
           <Route
-            path="/admin"
+            path="/gestion-interna"
             element={
               <PrivateRoute>
                 <Admin />
@@ -57,7 +59,7 @@ export default function App() {
             }
           />
           <Route
-            path="/admin-proyectos"
+            path="/gestion-interna-proyectos"
             element={
               <PrivateRoute>
                 <AdminProyectos />
@@ -65,7 +67,7 @@ export default function App() {
             }
           />
           <Route
-            path="/admin-personal"
+            path="/gestion-interna-personal"
             element={
               <PrivateRoute>
                 <AdminPersonal />
@@ -73,7 +75,7 @@ export default function App() {
             }
           />
           <Route
-            path="/admin-balance"
+            path="/gestion-interna-balance"
             element={
               <PrivateRoute>
                 <AdminBalance />
@@ -144,10 +146,11 @@ export default function App() {
               </PrivateRoute>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 
-      {!isAdminPath && <Footer />}
+      {!isAdminPath && !isLoginPath && <Footer />}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import FaultyTerminal from "./FaultyTerminal";
 import logo from "../assets/Trees_logo.webp";
 
 export default function Login() {
@@ -23,7 +24,7 @@ export default function Login() {
       if (error) {
         setError(error.message);
       } else {
-        navigate("/admin");
+        navigate("/gestion-interna");
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -46,21 +47,18 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4">
-      <div className="max-w-md w-full">
+    <div className="relative min-h-screen flex items-center justify-center bg-black px-4 overflow-hidden">
+      <FaultyTerminal />
+      <div className="relative z-10 max-w-md w-full backdrop-blur-sm">
         <div className="text-center mb-10">
-          <img
-            src={logo}
-            alt="Logo"
-            className="w-48 mx-auto mb-6 opacity-90"
-          />
+
           <h2 className="text-2xl font-bold text-white">Bienvenido de nuevo</h2>
           <p className="text-slate-400 mt-2">
             Ingresá tus credenciales para continuar
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-3xl shadow-2xl border border-slate-700/50">
+        <div className="bg-slate-900/80 p-8 rounded-3xl shadow-2xl border border-slate-700/50 backdrop-blur-md">
           <form onSubmit={handleLogin} className="space-y-6">
             {error && (
               <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm border border-red-100 italic space-y-2">
@@ -78,13 +76,13 @@ export default function Login() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Email
               </label>
               <div className="relative">
                 <input
                   type="email"
-                  className="w-full text-black pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                  className="w-full text-white pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-[#5EADF2]/50 focus:border-[#5EADF2] transition-all font-medium placeholder-slate-400"
                   placeholder="ejemplo@correo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -94,13 +92,13 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Contraseña
               </label>
               <div className="relative">
                 <input
                   type="password"
-                  className="w-full text-black pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                  className="w-full text-white pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-[#5EADF2]/50 focus:border-[#5EADF2] transition-all font-medium placeholder-slate-400"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

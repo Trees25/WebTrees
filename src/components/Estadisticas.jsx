@@ -91,7 +91,7 @@ export default function Estadisticas() {
             </p>
           </div>
           <button
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate("/gestion-interna")}
             className="px-4 py-2 bg-white border rounded-lg text-sm"
           >
             ← Volver

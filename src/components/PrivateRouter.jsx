@@ -33,7 +33,7 @@ export default function PrivateRoute({ children }) {
 
   if (checkingSession) return <p className="text-center mt-5">Cargando...</p>;
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/ingreso-privado" replace />;
 
   return children;
 }

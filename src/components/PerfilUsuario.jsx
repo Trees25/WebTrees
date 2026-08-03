@@ -61,7 +61,7 @@ export default function PerfilUsuario() {
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-slate-800">Mi Perfil</h2>
           <button
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate("/gestion-interna")}
             className="text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors"
           >
             ← Volver

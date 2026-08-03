@@ -90,15 +90,15 @@ export default function Admin() {
   if (profileLoading) return <div className="p-8 text-center">Cargando...</div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-12 text-slate-900 dark:text-slate-100 transition-colors">
       <Header />
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-800">
+            <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
               Panel de Control
             </h2>
-            <p className="text-slate-500">
+            <p className="text-slate-500 dark:text-slate-400">
               Bienvenido,{" "}
               {profile?.nombre_usuario && profile?.apellido_usuario
                 ? `${profile.nombre_usuario} ${profile.apellido_usuario}`
@@ -109,12 +109,12 @@ export default function Admin() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate("/perfil-usuario")}
-                className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-50 transition-all active:scale-95 flex items-center gap-2"
+                className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-95 flex items-center gap-2"
               >
                 👤 Mi Perfil
               </button>
-              <div className="px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-xl">
-                <span className="text-emerald-700 font-bold text-sm">
+              <div className="px-4 py-2 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800/50 rounded-xl">
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">
                   Equipo: Trees
                 </span>
               </div>
@@ -133,34 +133,34 @@ export default function Admin() {
           {adminCards.map((card, idx) => (
             <div
               key={idx}
-              className="group relative bg-white p-6 rounded-2xl shadow-sm border border-slate-100 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
+              className="group relative bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
               onClick={() => navigate(card.path)}
             >
               <div className="relative">
                 <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
                   {card.icon}
                 </div>
-                <h3 className="text-lg font-bold text-slate-800 mb-1">
+                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">
                   {card.title}
                 </h3>
-                <p className="text-sm text-slate-600">{card.desc}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{card.desc}</p>
               </div>
             </div>
           ))}
         </div>
 
         <div className="mt-12 mb-6">
-          <h3 className="text-xl font-bold text-slate-800 border-b border-slate-200 pb-2">
+          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2">
             Gestión Interna
           </h3>
-          <p className="text-sm text-slate-500 mt-2">
-            Administración de proyectos y personal.
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+            Administración de proyectos, balances y pagos generales.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
-            className="group relative bg-white p-6 rounded-2xl shadow-sm border border-slate-100 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
-            onClick={() => navigate("/admin-proyectos")}
+            className="group relative bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
+            onClick={() => navigate("/gestion-interna-proyectos")}
           >
             <div className="absolute top-6 right-6 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
@@ -170,18 +170,18 @@ export default function Admin() {
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
                 🏗️
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">
                 Proyectos
               </h3>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Gestión de proyectos y pagos de clientes
               </p>
             </div>
           </div>
 
           <div
-            className="group relative bg-white p-6 rounded-2xl shadow-sm border border-slate-100 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
-            onClick={() => navigate("/admin-personal")}
+            className="group relative bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
+            onClick={() => navigate("/gestion-interna-personal")}
           >
             <div className="absolute top-6 right-6 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -189,20 +189,20 @@ export default function Admin() {
             </div>
             <div className="relative">
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                👨‍💻
+                💸
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">
-                Personal
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">
+                Pagos Generales
               </h3>
-              <p className="text-sm text-slate-600">
-                Registro de pagos a desarrolladores
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Gestión de pagos y utilidades
               </p>
             </div>
           </div>
 
           <div
-            className="group relative bg-white p-6 rounded-2xl shadow-sm border border-slate-100 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
-            onClick={() => navigate("/admin-balance")}
+            className="group relative bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
+            onClick={() => navigate("/gestion-interna-balance")}
           >
             <div className="absolute top-6 right-6 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -212,10 +212,10 @@ export default function Admin() {
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
                 📈
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-1">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">
                 Balance Mensual
               </h3>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Reportes y gráficos de ingresos y egresos
               </p>
             </div>
@@ -228,21 +228,21 @@ export default function Admin() {
 
 function StatCard({ label, value, color }) {
   const colors = {
-    blue: "text-blue-600 bg-blue-50",
-    emerald: "text-emerald-600 bg-emerald-50",
-    indigo: "text-indigo-600 bg-indigo-50",
+    blue: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30",
+    emerald: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30",
+    indigo: "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30",
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between transition-colors">
       <div>
-        <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
           {label}
         </p>
-        <p className="text-3xl font-bold text-slate-800">{value}</p>
+        <p className="text-3xl font-bold text-slate-800 dark:text-slate-100">{value}</p>
       </div>
       <div
-        className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold ${colors[color]}`}
+        className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold transition-colors ${colors[color]}`}
       >
         {label[0]}
       </div>

@@ -120,24 +120,30 @@ export default function Perfiles() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-12 text-slate-900 dark:text-slate-100">
       <Header />
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-800">
+            <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
               Cuentas de Pago
             </h2>
-            <p className="text-slate-500">
+            <p className="text-slate-500 dark:text-slate-400">
               Configura tus datos bancarios para los PDFs
             </p>
           </div>
+          <button
+            className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg shadow-sm hover:bg-slate-50 dark:bg-slate-950 transition-all active:scale-95"
+            onClick={() => navigate("/gestion-interna")}
+          >
+            ← Volver al Admin
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-24 transition-all">
-              <h3 className="font-bold text-lg mb-4 text-slate-800">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 sticky top-24 transition-all">
+              <h3 className="font-bold text-lg mb-4 text-slate-800 dark:text-slate-100">
                 {idEnEdicion ? "Editar Cuenta" : "Nueva Cuenta"}
               </h3>
               <form onSubmit={handleGuardar} className="space-y-4">
@@ -147,7 +153,7 @@ export default function Perfiles() {
                   </label>
                   <input
                     required
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:border-blue-500 transition-all font-medium"
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:border-blue-500 transition-all font-medium text-slate-900 dark:text-slate-100"
                     placeholder="Para identificar el banco o billetera"
                     value={nuevo.alias}
                     onChange={(e) =>
@@ -160,7 +166,7 @@ export default function Perfiles() {
                     Beneficiario
                   </label>
                   <input
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:border-blue-500 transition-all text-slate-900 dark:text-slate-100"
                     placeholder="Nombre completo"
                     value={nuevo.beneficiario}
                     onChange={(e) =>
@@ -173,7 +179,7 @@ export default function Perfiles() {
                     DNI/CUIT
                   </label>
                   <input
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:border-blue-500 transition-all text-slate-900 dark:text-slate-100"
                     value={nuevo.dni}
                     onChange={(e) =>
                       setNuevo({ ...nuevo, dni: e.target.value })
@@ -185,7 +191,7 @@ export default function Perfiles() {
                     Banco
                   </label>
                   <input
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:border-blue-500 transition-all text-slate-900 dark:text-slate-100"
                     value={nuevo.banco}
                     onChange={(e) =>
                       setNuevo({ ...nuevo, banco: e.target.value })
@@ -197,7 +203,7 @@ export default function Perfiles() {
                     CBU/Alias
                   </label>
                   <input
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:border-blue-500 transition-all text-slate-900 dark:text-slate-100"
                     value={nuevo.cbu_alias}
                     onChange={(e) =>
                       setNuevo({ ...nuevo, cbu_alias: e.target.value })
@@ -216,7 +222,7 @@ export default function Perfiles() {
                     <button
                       type="button"
                       onClick={handleCancelar}
-                      className="w-full py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition-all active:scale-95 text-sm"
+                      className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-200 transition-all active:scale-95 text-sm"
                     >
                       Cancelar
                     </button>
@@ -230,10 +236,10 @@ export default function Perfiles() {
             {perfiles.map((p) => (
               <div
                 key={p.id}
-                className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center group hover:border-blue-200 transition-all"
+                className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex justify-between items-center group hover:border-blue-200 transition-all"
               >
                 <div className="flex-1">
-                  <h4 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                  <h4 className="font-bold text-slate-800 dark:text-slate-100 text-lg flex items-center gap-2">
                     {p.alias}
                     {p.id === idEnEdicion && (
                       <span className="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full uppercase tracking-widest">
@@ -241,7 +247,7 @@ export default function Perfiles() {
                       </span>
                     )}
                   </h4>
-                  <p className="text-sm text-slate-500 italic">
+                  <p className="text-sm text-slate-500 dark:text-slate-400 italic">
                     {p.beneficiario}
                   </p>
                   <div className="mt-2 flex gap-4 text-xs text-slate-400">
@@ -253,16 +259,16 @@ export default function Perfiles() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                <div className="flex items-center gap-2 transition-all">
                   <button
                     onClick={() => handleEdit(p)}
-                    className="p-2 px-4 text-blue-600 hover:bg-blue-50 font-bold rounded-lg text-xs transition-all"
+                    className="px-3 py-1 bg-orange-100 text-orange-600 hover:bg-orange-200 font-bold rounded-lg text-xs transition-colors"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => handleDelete(p.id)}
-                    className="p-2 px-4 text-red-500 hover:bg-red-50 font-bold rounded-lg text-xs transition-all"
+                    className="px-3 py-1 bg-orange-100 text-orange-600 hover:bg-orange-200 font-bold rounded-lg text-xs transition-colors"
                   >
                     Eliminar
                   </button>
@@ -270,7 +276,7 @@ export default function Perfiles() {
               </div>
             ))}
             {perfiles.length === 0 && (
-              <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300 text-slate-400">
+              <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-300 text-slate-400">
                 No hay cuentas configuradas.
               </div>
             )}

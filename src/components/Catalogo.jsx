@@ -92,24 +92,30 @@ export default function Catalogo() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-12">
       <Header />
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-800">
+            <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
               Catálogo de Servicios
             </h2>
-            <p className="text-slate-500">
+            <p className="text-slate-500 dark:text-slate-400">
               Administra tus servicios y precios predefinidos
             </p>
           </div>
+          <button
+            className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg shadow-sm hover:bg-slate-50 dark:bg-slate-950 transition-all active:scale-95"
+            onClick={() => navigate("/gestion-interna")}
+          >
+            ← Volver al Admin
+          </button>
         </div>
 
         <div
-          className={`bg-white p-6 rounded-2xl shadow-sm border transition-all ${idEnEdicion ? "border-amber-300 ring-4 ring-amber-50" : "border-slate-200"} mb-8`}
+          className={`bg-slate-50 dark:bg-slate-950 p-6 rounded-2xl shadow-sm border transition-all ${idEnEdicion ? "border-amber-300 ring-4 ring-amber-50" : "border-slate-200 dark:border-slate-800"} mb-8`}
         >
-          <h3 className="text-lg font-bold text-slate-800 mb-6">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6">
             {idEnEdicion ? "Editar Servicio" : "Nuevo Servicio"}
           </h3>
           <form
@@ -117,25 +123,25 @@ export default function Catalogo() {
             className="flex flex-col md:flex-row gap-4 items-end"
           >
             <div className="flex-1 w-full">
-              <label className="block text-sm font-medium text-slate-700 mb-1 font-bold">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 font-bold">
                 Nombre
               </label>
               <input
                 required
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-amber-500/20"
+                className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-amber-500/20 text-slate-900 dark:text-slate-100"
                 value={nuevo.nombre}
                 onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
                 placeholder="Ej: Poda de altura"
               />
             </div>
             <div className="w-full md:w-32">
-              <label className="block text-sm font-medium text-slate-700 mb-1 font-bold">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1 font-bold">
                 Precio
               </label>
               <input
                 required
                 type="number"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-amber-500/20"
+                className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-amber-500/20 text-slate-900 dark:text-slate-100"
                 value={nuevo.precio}
                 onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })}
                 placeholder="0.00"
@@ -145,7 +151,7 @@ export default function Catalogo() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 md:flex-none px-8 py-2 bg-amber-600 text-white font-bold rounded-xl shadow-lg shadow-amber-100 hover:bg-amber-700 transition-all active:scale-95 disabled:opacity-50"
+                className="flex-1 md:flex-none px-8 py-2 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition-all active:scale-95 disabled:opacity-50"
               >
                 {idEnEdicion ? "Actualizar" : "Guardar"}
               </button>
@@ -153,7 +159,7 @@ export default function Catalogo() {
                 <button
                   type="button"
                   onClick={handleCancelar}
-                  className="px-4 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition-all active:scale-95"
+                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-200 transition-all active:scale-95"
                 >
                   Cancelar
                 </button>
@@ -162,15 +168,15 @@ export default function Catalogo() {
           </form>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="divide-y divide-slate-100">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {servicios.map((s) => (
               <div
                 key={s.id}
-                className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                className="p-4 flex items-center justify-between hover:bg-slate-50 dark:bg-slate-950 transition-colors group"
               >
                 <div className="flex-1">
-                  <p className="font-bold text-slate-800 flex items-center gap-2">
+                  <p className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                     {s.nombre}
                     {idEnEdicion === s.id && (
                       <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full uppercase tracking-widest font-bold">
@@ -182,16 +188,16 @@ export default function Catalogo() {
                     ${Number(s.precio).toFixed(2)}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                <div className="flex items-center gap-2 transition-all">
                   <button
                     onClick={() => handleEdit(s)}
-                    className="p-2 px-4 text-amber-600 hover:bg-amber-50 font-bold rounded-lg text-xs transition-all"
+                    className="px-3 py-1 bg-orange-100 text-orange-600 hover:bg-orange-200 font-bold rounded-lg text-xs transition-colors"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => handleEliminar(s.id)}
-                    className="p-2 px-4 text-red-100 hover:text-red-500 transition-colors font-bold text-xs"
+                    className="px-3 py-1 bg-orange-100 text-orange-600 hover:bg-orange-200 font-bold rounded-lg text-xs transition-colors"
                   >
                     Eliminar
                   </button>

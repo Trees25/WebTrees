@@ -77,10 +77,10 @@ export default function ClientesPosventa() {
 
     const calcularEstado = (nombreEmpresa) => {
         const recibosCliente = recibosPosventa.filter(r => r.cliente_libre === nombreEmpresa);
-        if (recibosCliente.length === 0) return { texto: "Sin registros", color: "bg-slate-100 text-slate-600" };
+        if (recibosCliente.length === 0) return { texto: "Sin registros", color: "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" };
 
         const ultimoRecibo = recibosCliente[0]; // Están ordenados descendente
-        if (!ultimoRecibo.fecha) return { texto: "Fecha inválida", color: "bg-slate-100 text-slate-600" };
+        if (!ultimoRecibo.fecha) return { texto: "Fecha inválida", color: "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" };
 
         const fechaUltimoPago = new Date(ultimoRecibo.fecha);
         const hoy = new Date();
@@ -99,17 +99,17 @@ export default function ClientesPosventa() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-12 relative">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-12 relative">
             <Header />
             <div className="max-w-6xl mx-auto px-4">
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h2 className="text-3xl font-bold text-slate-800">Administrador de Suscripciones</h2>
-                        <p className="text-slate-500">Control de clientes y pagos del sistema Posventa</p>
+                        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Administrador de Suscripciones</h2>
+                        <p className="text-slate-500 dark:text-slate-400">Control de clientes y pagos del sistema Posventa</p>
                     </div>
                     <button
-                        className="px-4 py-2 text-sm font-medium bg-white border border-slate-200 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50 transition-all active:scale-95"
-                        onClick={() => navigate("/admin")}
+                        className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg shadow-sm hover:bg-slate-50 dark:bg-slate-950 transition-all active:scale-95"
+                        onClick={() => navigate("/gestion-interna")}
                     >
                         ← Volver al Admin
                     </button>
@@ -127,12 +127,12 @@ export default function ClientesPosventa() {
                     </div>
                 )}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                        <h3 className="font-bold text-slate-700">Listado de Empresas Suscritas</h3>
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-950">
+                        <h3 className="font-bold text-slate-700 dark:text-slate-200">Listado de Empresas Suscritas</h3>
                         <button 
                             onClick={cargarClientesYRecibos}
-                            className="text-sm px-3 py-1 bg-white border border-slate-300 rounded hover:bg-slate-50 text-slate-600 transition-colors"
+                            className="text-sm px-3 py-1 bg-white dark:bg-slate-900 border border-slate-300 rounded hover:bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-300 transition-colors"
                         >
                             Actualizar Estados
                         </button>
@@ -140,17 +140,17 @@ export default function ClientesPosventa() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
                             <thead>
-                                <tr className="bg-white border-b border-slate-200">
-                                    <th className="py-4 px-6 text-sm font-semibold text-slate-600">Empresa</th>
-                                    <th className="py-4 px-6 text-sm font-semibold text-slate-600">Contacto</th>
-                                    <th className="py-4 px-6 text-sm font-semibold text-slate-600">Estado de Pago</th>
-                                    <th className="py-4 px-6 text-sm font-semibold text-slate-600 text-right">Acciones</th>
+                                <tr className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                                    <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300">Empresa</th>
+                                    <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300">Contacto</th>
+                                    <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300">Estado de Pago</th>
+                                    <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300 text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                                 {loading && (
                                     <tr>
-                                        <td colSpan={4} className="py-8 text-center text-slate-500">Analizando registros de suscripciones...</td>
+                                        <td colSpan={4} className="py-8 text-center text-slate-500 dark:text-slate-400">Analizando registros de suscripciones...</td>
                                     </tr>
                                 )}
                                 {!loading && clientes.length === 0 && (
@@ -182,11 +182,11 @@ export default function ClientesPosventa() {
                                     const estadoObj = calcularEstado(nombreEmpresa);
 
                                     return (
-                                        <tr key={cli.id} className="hover:bg-slate-50 transition-colors">
-                                            <td className="py-4 px-6 text-sm font-bold text-slate-900">
+                                        <tr key={cli.id} className="hover:bg-slate-50 dark:bg-slate-950 transition-colors">
+                                            <td className="py-4 px-6 text-sm font-bold text-slate-900 dark:text-slate-100">
                                                 {nombreEmpresa}
                                             </td>
-                                            <td className="py-4 px-6 text-sm text-slate-500">
+                                            <td className="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">
                                                 <div>{email}</div>
                                                 <div className="text-xs text-slate-400">{phone}</div>
                                             </td>
@@ -198,7 +198,7 @@ export default function ClientesPosventa() {
                                             <td className="py-4 px-6 text-right">
                                                 <button
                                                     onClick={() => abrirHistorial(nombreEmpresa)}
-                                                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors mr-2"
+                                                    className="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg transition-colors mr-2"
                                                 >
                                                     Historial
                                                 </button>
@@ -221,25 +221,25 @@ export default function ClientesPosventa() {
             {/* Modal de Historial */}
             {modalHistorial && (
                 <div className="fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-6 relative">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg shadow-2xl p-6 relative">
                         <button 
                             onClick={() => setModalHistorial(null)}
-                            className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 text-xl font-bold"
+                            className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 dark:text-slate-100 text-xl font-bold"
                         >
                             ×
                         </button>
                         <h3 className="text-xl font-bold mb-1">Historial de Pagos</h3>
-                        <p className="text-sm text-slate-500 mb-6">{modalHistorial.nombre}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{modalHistorial.nombre}</p>
 
                         <div className="max-h-80 overflow-y-auto space-y-3">
                             {modalHistorial.recibos.length === 0 ? (
                                 <p className="text-center py-8 text-slate-400 text-sm">Sin recibos registrados.</p>
                             ) : (
                                 modalHistorial.recibos.map(r => (
-                                    <div key={r.id} className="flex justify-between items-center p-3 rounded-lg border border-slate-100 bg-slate-50">
+                                    <div key={r.id} className="flex justify-between items-center p-3 rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
                                         <div>
-                                            <p className="font-bold text-slate-700">Recibo N° {r.numero}</p>
-                                            <p className="text-xs text-slate-500">{new Date(r.fecha).toLocaleDateString()}</p>
+                                            <p className="font-bold text-slate-700 dark:text-slate-200">Recibo N° {r.numero}</p>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400">{new Date(r.fecha).toLocaleDateString()}</p>
                                         </div>
                                         <div className="text-right">
                                             <span className="text-xs px-2 py-1 bg-emerald-100 text-emerald-700 rounded-md font-bold">Cobrado</span>

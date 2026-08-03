@@ -246,49 +246,63 @@ export default function Resumen() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-12 text-slate-900 dark:text-slate-100">
       <Header />
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div>
-            <h2 className="text-3xl font-bold text-slate-800">
-              Resumen General
-            </h2>
-            <p className="text-slate-500">Historial de documentos emitidos</p>
-            {profileError && (
-              <div className="mt-4 p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl">
-                <p className="font-bold text-sm">Estado del Perfil:</p>
-                <p className="text-xs">{profileError}</p>
-              </div>
-            )}
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+          <div className="flex flex-col gap-4">
+            <div>
+              <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
+                Resumen General
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400">Historial de documentos emitidos</p>
+              {profileError && (
+                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl">
+                  <p className="font-bold text-sm">Estado del Perfil:</p>
+                  <p className="text-xs">{profileError}</p>
+                </div>
+              )}
+            </div>
+            <div className="flex gap-3 flex-wrap">
+              <button
+                className="px-4 py-2 text-sm font-bold bg-blue-50 text-blue-700 border border-blue-100 rounded-lg shadow-sm hover:bg-blue-100 transition-all active:scale-95"
+                onClick={() => navigate("/presupuesto")}
+              >
+                + Presupuesto
+              </button>
+              <button
+                className="px-4 py-2 text-sm font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg shadow-sm hover:bg-emerald-100 transition-all active:scale-95"
+                onClick={() => navigate("/recibo")}
+              >
+                + Recibo
+              </button>
+              <button
+                className="px-4 py-2 text-sm font-bold bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm hover:bg-slate-100 dark:bg-slate-800 transition-all active:scale-95"
+                onClick={exportarExcel}
+              >
+                📊 Excel
+              </button>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <button
-              className="px-4 py-2 text-sm font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg shadow-sm hover:bg-emerald-100 transition-all active:scale-95"
-              onClick={exportarExcel}
-            >
-              📊 Exportar Excel
-            </button>
-            <button
-              className="px-4 py-2 text-sm font-medium bg-white border border-slate-200 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50 transition-all active:scale-95"
-              onClick={() => navigate("/admin")}
-            >
-              ← Volver al Inicio
-            </button>
-          </div>
+          <button
+            className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg shadow-sm hover:bg-slate-50 dark:bg-slate-950 transition-all active:scale-95"
+            onClick={() => navigate("/gestion-interna")}
+          >
+            ← Volver al Admin
+          </button>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-8 flex flex-col md:flex-row gap-4 items-center">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-1 w-full">
             <input
-              className="w-full pl-4 pr-4 py-2 bg-slate-50 border border-transparent focus:bg-white focus:border-blue-500 rounded-xl outline-none transition-all"
+              className="w-full pl-4 pr-4 py-2 bg-slate-50 dark:bg-slate-950 border border-transparent focus:bg-white dark:bg-slate-900 focus:border-blue-500 rounded-xl outline-none transition-all"
               placeholder="Buscar por cliente o número..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
             />
           </div>
           <select
-            className="px-4 py-2 bg-slate-50 rounded-xl outline-none border border-transparent focus:border-blue-500"
+            className="px-4 py-2 bg-slate-50 dark:bg-slate-950 rounded-xl outline-none border border-transparent focus:border-blue-500"
             value={filtroTipo}
             onChange={(e) => setFiltroTipo(e.target.value)}
           >
@@ -297,7 +311,7 @@ export default function Resumen() {
             <option value="recibo">Recibos</option>
           </select>
           <button
-            className="px-6 py-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors"
+            className="px-6 py-2 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:text-slate-100 transition-colors"
             onClick={() => {
               setBusqueda("");
               setFiltroTipo("todos");
@@ -308,11 +322,11 @@ export default function Resumen() {
           </button>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left font-medium">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
+                <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
                   <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider">
                     Doc
                   </th>
@@ -333,15 +347,15 @@ export default function Resumen() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {filtrados.map((doc) => (
                   <tr
                     key={doc.id}
-                    className="hover:bg-slate-50 transition-colors group"
+                    className="hover:bg-slate-50 dark:bg-slate-950 transition-colors group"
                   >
                     <td className="py-4 px-6">
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-slate-900 mb-0.5">
+                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-0.5">
                           #{doc.numero}
                         </span>
                         <span
@@ -352,24 +366,24 @@ export default function Resumen() {
                       </div>
                     </td>
                     <td className="py-4 px-6">
-                      <div className="text-sm text-slate-700 font-bold">
+                      <div className="text-sm text-slate-700 dark:text-slate-200 font-bold">
                         {doc.clientes?.nombre || "Consumidor Final"}
                       </div>
                       <div className="text-[10px] text-slate-400">
                         {doc.clientes?.dni_cuit || ""}
                       </div>
                     </td>
-                    <td className="py-4 px-6 text-sm text-slate-500">
+                    <td className="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">
                       {new Date(doc.fecha).toLocaleDateString("es-AR")}
                     </td>
                     <td className="py-4 px-6">
                       {doc.creador ? (
                         <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-bold text-slate-500">
+                          <div className="w-7 h-7 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400">
                             {doc.creador.nombre_usuario?.[0]}
                             {doc.creador.apellido_usuario?.[0]}
                           </div>
-                          <span className="text-sm text-slate-600">
+                          <span className="text-sm text-slate-600 dark:text-slate-300">
                             {doc.creador.nombre_usuario}
                           </span>
                         </div>
@@ -377,7 +391,7 @@ export default function Resumen() {
                         <span className="text-xs text-slate-300">Sistema</span>
                       )}
                     </td>
-                    <td className="py-4 px-6 text-sm font-bold text-slate-900 text-right">
+                    <td className="py-4 px-6 text-sm font-bold text-slate-900 dark:text-slate-100 text-right">
                       $
                       {calcularTotal(doc.documento_items).toLocaleString(
                         "es-AR",
@@ -388,7 +402,7 @@ export default function Resumen() {
                       <div className="flex items-center justify-end gap-3">
                         <button
                           onClick={() => descargarPDF(doc)}
-                          className="p-2 bg-slate-50 text-slate-500 hover:bg-slate-100 rounded-lg transition-all"
+                          className="p-2 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:bg-slate-800 rounded-lg transition-all"
                           title="Descargar PDF"
                         >
                           📄

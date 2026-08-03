@@ -153,30 +153,38 @@ export default function Recibo() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-12 text-slate-900 dark:text-slate-100">
       <Header />
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="flex items-start justify-between mb-8">
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => navigate("/resumen")}
+              className="px-4 py-2 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-lg text-sm font-bold hover:bg-indigo-100 transition-all shadow-sm"
+            >
+              📊 Ver Resumen
+            </button>
+            <button
+              onClick={() => navigate("/presupuesto")}
+              className="px-4 py-2 bg-blue-50 border border-blue-100 text-blue-700 rounded-lg text-sm font-bold hover:bg-blue-100 transition-all shadow-sm"
+            >
+              📄 Ir a Presupuestos
+            </button>
+          </div>
           <button
-            onClick={() => navigate("/admin")}
-            className="px-4 py-2 bg-white border rounded-lg text-sm transition-colors"
+            onClick={() => navigate("/gestion-interna")}
+            className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:bg-slate-950 transition-all shadow-sm"
           >
-            ← Inicio
-          </button>
-          <button
-            onClick={() => navigate("/resumen")}
-            className="px-4 py-2 bg-white border rounded-lg text-sm transition-colors"
-          >
-            Resumen
+            ← Volver al Admin
           </button>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border p-8 transition-colors">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border p-8 transition-colors">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 transition-colors">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 transition-colors">
               Generar Recibo
             </h2>
-            <div className="bg-slate-100 px-4 py-2 rounded-lg font-bold transition-colors">
+            <div className="bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-lg font-bold transition-colors">
               N° {contador}
             </div>
           </div>
@@ -193,7 +201,7 @@ export default function Recibo() {
                   <input
                     type="text"
                     readOnly
-                    className="w-full px-4 py-2 border rounded-lg bg-slate-50 text-slate-700"
+                    className="w-full px-4 py-2 border rounded-lg bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200"
                     value={clienteLibre}
                   />
                   <button
@@ -206,7 +214,7 @@ export default function Recibo() {
                 </div>
               ) : (
                 <select
-                  className="w-full px-4 py-2 border rounded-lg bg-white transition-colors"
+                  className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-slate-900 transition-colors"
                   value={clienteId}
                   onChange={(e) => setClienteId(e.target.value)}
                 >
@@ -227,19 +235,19 @@ export default function Recibo() {
               </label>
               <input
                 type="date"
-                className="w-full px-4 py-2 border rounded-lg bg-white transition-colors"
+                className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-slate-900 transition-colors"
                 value={fecha}
                 onChange={(e) => setFecha(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="mb-8 p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 transition-colors">
+          <div className="mb-8 p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 transition-colors">
             <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
               Añadir desde Catálogo
             </label>
             <select
-              className="w-full md:w-1/2 px-4 py-2 border rounded-lg bg-white transition-colors"
+              className="w-full md:w-1/2 px-4 py-2 border rounded-lg bg-white dark:bg-slate-900 transition-colors"
               value=""
               onChange={(e) => {
                 const s = servicios.find((srv) => srv.id === e.target.value);
@@ -276,7 +284,7 @@ export default function Recibo() {
 
           <table className="w-full mb-6 text-left">
             <thead>
-              <tr className="border-b text-slate-600 transition-colors">
+              <tr className="border-b text-slate-600 dark:text-slate-300 transition-colors">
                 <th className="py-2">Descripción</th>
                 <th className="py-2 w-24 text-center">Cant.</th>
                 <th className="py-2 w-32 text-right px-2">Importe</th>
@@ -301,7 +309,7 @@ export default function Recibo() {
                   </td>
                   <td className="py-3 text-center">
                     <input
-                      className="w-20 text-center bg-slate-50 rounded border"
+                      className="w-20 text-center bg-slate-50 dark:bg-slate-950 rounded border"
                       type="number"
                       value={f.cantidad}
                       onChange={(e) =>
@@ -311,7 +319,7 @@ export default function Recibo() {
                   </td>
                   <td className="py-3 text-right">
                     <input
-                      className="w-28 text-right bg-slate-50 rounded px-2 border"
+                      className="w-28 text-right bg-slate-50 dark:bg-slate-950 rounded px-2 border"
                       type="number"
                       value={f.precio_unitario}
                       onChange={(e) =>

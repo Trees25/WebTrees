@@ -76,15 +76,15 @@ export default function Clientes() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12 text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-12 text-slate-900 dark:text-slate-100">
       <Header />
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-800">
+            <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
               Gestión de Clientes
             </h2>
-            <p className="text-slate-500">
+            <p className="text-slate-500 dark:text-slate-400">
               Administra tu base de datos de clientes
             </p>
             {profileError && (
@@ -94,8 +94,8 @@ export default function Clientes() {
             )}
           </div>
           <button
-            className="px-4 py-2 text-sm font-medium bg-white border border-slate-200 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50 transition-all active:scale-95"
-            onClick={() => navigate("/admin")}
+            className="px-4 py-2 text-sm font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-lg shadow-sm hover:bg-slate-50 dark:bg-slate-950 transition-all active:scale-95"
+            onClick={() => navigate("/gestion-interna")}
           >
             ← Volver al Admin
           </button>
@@ -104,17 +104,17 @@ export default function Clientes() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Formulario */}
           <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-              <h3 className="text-lg font-bold text-slate-800 mb-6">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6">
                 Nuevo Cliente
               </h3>
               <form onSubmit={handleAgregar} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     Nombre *
                   </label>
                   <input
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
                     value={nuevoCliente.nombre}
                     onChange={(e) =>
                       setNuevoCliente({
@@ -126,11 +126,11 @@ export default function Clientes() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     DNI / CUIT
                   </label>
                   <input
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
                     value={nuevoCliente.dni_cuit}
                     onChange={(e) =>
                       setNuevoCliente({
@@ -141,12 +141,12 @@ export default function Clientes() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     Teléfono
                   </label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20"
                     value={nuevoCliente.telefono}
                     onChange={(e) =>
                       setNuevoCliente({
@@ -159,7 +159,7 @@ export default function Clientes() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95"
+                  className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition-all active:scale-95"
                 >
                   Agregar Cliente
                 </button>
@@ -169,32 +169,32 @@ export default function Clientes() {
 
           {/* Listado */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200">
-                      <th className="py-4 px-6 text-sm font-semibold text-slate-600">
+                    <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+                      <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300">
                         Nombre
                       </th>
-                      <th className="py-4 px-6 text-sm font-semibold text-slate-600">
+                      <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300">
                         DNI/CUIT
                       </th>
-                      <th className="py-4 px-6 text-sm font-semibold text-slate-600">
+                      <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300">
                         Teléfono
                       </th>
-                      <th className="py-4 px-6 text-sm font-semibold text-slate-600 text-right">
+                      <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-slate-300 text-right">
                         Acciones
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {clientes.map((cli) => (
                       <tr
                         key={cli.id}
-                        className="hover:bg-slate-50 transition-colors"
+                        className="hover:bg-slate-50 dark:bg-slate-950 transition-colors"
                       >
-                        <td className="py-4 px-6 text-sm font-bold text-slate-900">
+                        <td className="py-4 px-6 text-sm font-bold text-slate-900 dark:text-slate-100">
                           <div className="flex items-center gap-2">
                             {cli.nombre}
                             {cli.tipo === "lead" && (
@@ -204,10 +204,10 @@ export default function Clientes() {
                             )}
                           </div>
                         </td>
-                        <td className="py-4 px-6 text-sm text-slate-500">
+                        <td className="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">
                           {cli.dni_cuit || "-"}
                         </td>
-                        <td className="py-4 px-6 text-sm text-slate-500">
+                        <td className="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">
                           {cli.telefono || "-"}
                         </td>
                         <td className="py-4 px-6 text-right">
