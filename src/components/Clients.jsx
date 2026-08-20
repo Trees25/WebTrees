@@ -12,6 +12,8 @@ import AllPackLogo from "../assets/AllPack_logo.webp";
 import logo_cortineria from "../assets/logo_cortineria.webp";
 import excellenceLogo from "../assets/logo_excellence.webp";
 import victormolinaLogo from "../assets/VictorMolina_logo.webp";
+import logoElite from "../assets/logoelite.webp";
+import logoSielec from "../assets/logosielec.webp";
 
 const clients = [
   { id: 1, src: asocSarLogo, alt: "Asociación Sanjuanina" },
@@ -24,6 +26,8 @@ const clients = [
   { id: 9, src: logo_cortineria, alt: "Cortineria" },
   { id: 10, src: excellenceLogo, alt: "Excellence CEI" },
   { id: 11, src: victormolinaLogo, alt: "Victor Molina" },
+  { id: 12, src: logoElite, alt: "Elite Club" },
+  { id: 13, src: logoSielec, alt: "Sielec" },
 ];
 
 export default function Clients() {
@@ -44,10 +48,10 @@ export default function Clients() {
           className="text-center mb-16"
         >
           <span className="text-[#5EADF2] font-bold tracking-widest uppercase text-sm">
-            Confían en nosotros
+            Alianzas Estratégicas
           </span>
           <h2 className="text-4xl md:text-5xl font-black text-white mt-2 mb-6">
-            Nuestros Clientes
+            Empresas con las que trabajamos
           </h2>
           <div className="w-24 h-1.5 bg-[#5EADF2] mx-auto rounded-full opacity-80" />
         </motion.div>

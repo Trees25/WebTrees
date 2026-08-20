@@ -96,7 +96,7 @@ export default function Projects() {
                   {/* Hover Gradiente y Botón */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101726] via-[#101726]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                     <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                      {project.link !== "#" ? (
+                      {project.link !== "#contacto" && project.link !== "#" ? (
                         <a
                           href={project.link}
                           target="_blank"
@@ -104,6 +104,13 @@ export default function Projects() {
                           className="inline-flex items-center gap-2 text-sm font-bold text-[#101726] bg-[#5EADF2] px-5 py-2.5 rounded-xl hover:bg-white hover:text-[#101726] transition-colors"
                         >
                           Visitar Sitio <ExternalLink size={16} />
+                        </a>
+                      ) : project.link === "#contacto" ? (
+                        <a
+                          href="/#contacto"
+                          className="inline-flex items-center gap-2 text-sm font-bold text-[#101726] bg-[#5EADF2] px-5 py-2.5 rounded-xl hover:bg-white hover:text-[#101726] transition-colors"
+                        >
+                          Solicitar Demo <ExternalLink size={16} />
                         </a>
                       ) : (
                         <span className="inline-block text-sm font-bold text-gray-400 bg-white/10 px-5 py-2.5 rounded-xl">
