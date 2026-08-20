@@ -28,9 +28,20 @@
     />
     <title>TreesTech</title>
 
-    <script type="module" crossorigin src="/assets/index-BMP4uN-V.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CCa1nibp.css">
+    <script type="module" crossorigin src="/assets/index-gvh1RFMR.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CV0u5pX6.css">
   </head>
+  <!-- Dark Mode Init -->
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GV0CYC9F8N"></script>
 <script>
