@@ -19,7 +19,7 @@ export const allProjects = [
     title: "SIELEC",
     category: "Páginas Web",
     imgSrc: sielecImg,
-    link: "https://sielec.ar",
+    link: "https://sielec.com.ar",
     status: "Finalizado",
     featured: false,
     description: "Sitio web institucional para SIELEC. Diseñado para presentar los servicios de la empresa de manera profesional y clara, con un diseño responsivo y optimizado para SEO."
@@ -102,7 +102,7 @@ export const allProjects = [
     link: "https://certibankos.com",
     status: "Finalizado",
     featured: false,
-    description: "Aplicación web enfocada en la gestión y emisión de certificados digitales. Integra seguridad avanzada y generación de PDFs automatizada para usuarios autenticados."
+    description: "Sistema Operativo de Alta Seguridad Financiera Una solución integral basada en Linux diseñada específicamente para tesorerías y directivos financieros. CertiBankOS convierte cualquier PC en una terminal aislada y blindada de uso exclusivo bancario, mitigando riesgos de malware, phishing y fraudes corporativos mediante políticas estrictas de whitelisting y restricción de navegación."
   },
   {
     id: 4,
