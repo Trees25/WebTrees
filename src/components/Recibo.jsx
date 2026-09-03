@@ -4,6 +4,7 @@ import autoTable from "jspdf-autotable";
 import { useDocumento } from "../hooks/useDocumento";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/HeaderAdmin.jsx";
+import logoTrees from "../assets/Trees_logo.webp";
 
 export default function Recibo() {
   const {
@@ -21,6 +22,7 @@ export default function Recibo() {
     resetForm,
     servicios,
     setFilas,
+    obtenerSiguienteNumero,
   } = useDocumento("recibo");
 
   const [clienteId, setClienteId] = useState("");
@@ -69,34 +71,67 @@ export default function Recibo() {
     }
   }, [cargarDocumento, setFilas]);
 
-  const descargarPDF = () => {
+  const descargarPDF = async () => {
     const doc = new jsPDF();
     const selectedCliente = clientes.find((c) => c.id === clienteId);
+
+    // Obtener número real de la base de datos
+    const numReal = await obtenerSiguienteNumero();
 
     // Formateo de fecha seguro
     const [year, month, day] = fecha.split("-");
     const fechaFormateada = `${day}/${month}/${year}`;
 
-    const img = new Image();
-    img.src = "/assets/logo.png";
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text(`RECIBO`, 10, 10);
-    doc.setFontSize(12);
-    doc.text(`N°: ${contador}`, 10, 16);
-    doc.text(`Fecha: ${fechaFormateada}`, 10, 22);
-
+    // Convertir imagen a base64 png de forma segura
+    let logoBase64 = null;
     try {
-      doc.addImage(img, "PNG", 150, 5, 40, 20);
-    } catch (e) {}
+      logoBase64 = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          resolve(canvas.toDataURL("image/png"));
+        };
+        img.onerror = reject;
+        img.src = logoTrees;
+      });
+    } catch (e) {
+      console.warn("No se pudo cargar el logo:", e);
+    }
 
-    doc.text(
-      `Recibí de: ${selectedCliente?.nombre || clienteLibre || "No especificado"}`,
-      10,
-      35,
-    );
+    // Diseño del PDF
+    // Encabezado
+    doc.setFillColor(6, 78, 59); // emerald-900 (cambiamos color para recibo)
+    doc.rect(0, 0, 210, 40, "F");
 
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.text("RECIBO", 15, 20);
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`N°: ${numReal.toString().padStart(6, "0")}`, 15, 28);
+    doc.text(`Fecha: ${fechaFormateada}`, 15, 34);
+
+    if (logoBase64) {
+      doc.addImage(logoBase64, "PNG", 150, 5, 45, 30, undefined, "FAST");
+    }
+
+    // Datos del cliente
+    doc.setTextColor(30, 41, 59);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("RECIBÍ DE:", 15, 50);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Nombre: ${selectedCliente?.nombre || clienteLibre || "No especificado"}`, 15, 57);
+
+    // Tabla de ítems
     const tableBody = filas.map((f) => [
       f.cantidad.toString(),
       f.descripcion,
@@ -105,26 +140,46 @@ export default function Recibo() {
     ]);
 
     autoTable(doc, {
-      head: [["Cantidad", "Descripción", "Importe", "Subtotal"]],
+      head: [["Cant.", "Descripción", "Importe", "Subtotal"]],
       body: tableBody,
-      startY: 50,
+      startY: 70,
+      headStyles: { fillColor: [5, 150, 105], textColor: 255, fontStyle: "bold" },
+      bodyStyles: { textColor: 50 },
+      alternateRowStyles: { fillColor: [240, 253, 244] },
       foot: [
         [
           {
             content: "TOTAL RECIBIDO",
             colSpan: 3,
-            styles: { halign: "right", fontStyle: "bold" },
+            styles: { halign: "right", fontStyle: "bold", textColor: 255 },
           },
           {
             content: `$${calcularTotal().toFixed(2)}`,
-            styles: { fontStyle: "bold" },
+            styles: { fontStyle: "bold", textColor: 255 },
           },
         ],
       ],
-      footStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+      footStyles: { fillColor: [5, 150, 105] },
     });
 
-    doc.save(`recibo_${contador}.pdf`);
+    // Observaciones
+    if (observaciones) {
+      const finalY = doc.lastAutoTable.finalY + 15;
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 41, 59);
+      doc.text("OBSERVACIONES", 15, finalY);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      const textLines = doc.splitTextToSize(observaciones, 180);
+      doc.text(textLines, 15, finalY + 6);
+    }
+
+    // Pie de página
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text("Gracias por confiar en nosotros.", 105, 285, { align: "center" });
+
+    doc.save(`Recibo_${numReal.toString().padStart(6, "0")}.pdf`);
   };
 
   const handleGuardar = async () => {

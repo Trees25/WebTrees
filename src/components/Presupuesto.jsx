@@ -4,6 +4,7 @@ import autoTable from "jspdf-autotable";
 import { useDocumento } from "../hooks/useDocumento";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/HeaderAdmin";
+import logoTrees from "../assets/Trees_logo.webp";
 
 export default function Presupuesto() {
   const {
@@ -21,6 +22,7 @@ export default function Presupuesto() {
     resetForm,
     servicios,
     setFilas,
+    obtenerSiguienteNumero,
   } = useDocumento("presupuesto");
 
   const [clienteId, setClienteId] = useState("");
@@ -42,37 +44,75 @@ export default function Presupuesto() {
     }
   }, [cargarDocumento]);
 
-  const descargarPDF = () => {
+  const descargarPDF = async () => {
     const doc = new jsPDF();
     const selectedCliente = clientes.find((c) => c.id === clienteId);
     const selectedPerfil = perfilesPago.find((p) => p.id === perfilPagoId);
+
+    // Obtener número real de la base de datos
+    const numReal = await obtenerSiguienteNumero();
 
     // Formateo de fecha seguro
     const [year, month, day] = fecha.split("-");
     const fechaFormateada = `${day}/${month}/${year}`;
 
-    const img = new Image();
-    img.src = "/assets/logo.png";
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text(`PRESUPUESTO`, 10, 10);
-    doc.setFontSize(12);
-    doc.text(`N°: ${contador}`, 10, 16);
-    doc.text(`Fecha: ${fechaFormateada}`, 10, 22);
-
+    // Convertir imagen a base64 png de forma segura
+    let logoBase64 = null;
     try {
-      doc.addImage(img, "PNG", 150, 5, 40, 20);
-    } catch (e) {}
+      logoBase64 = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          resolve(canvas.toDataURL("image/png"));
+        };
+        img.onerror = reject;
+        img.src = logoTrees;
+      });
+    } catch (e) {
+      console.warn("No se pudo cargar el logo:", e);
+    }
 
-    doc.text(
-      `Cliente: ${selectedCliente?.nombre || "No especificado"}`,
-      10,
-      35,
-    );
-    if (selectedCliente?.dni_cuit)
-      doc.text(`DNI/CUIT: ${selectedCliente.dni_cuit}`, 10, 41);
+    // Diseño del PDF
+    // Encabezado
+    doc.setFillColor(30, 41, 59); // slate-800
+    doc.rect(0, 0, 210, 40, "F");
 
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.text("PRESUPUESTO", 15, 20);
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`N°: ${numReal.toString().padStart(6, "0")}`, 15, 28);
+    doc.text(`Fecha: ${fechaFormateada}`, 15, 34);
+
+    if (logoBase64) {
+      // Ajustar dimensiones según convenga
+      doc.addImage(logoBase64, "PNG", 150, 5, 45, 30, undefined, "FAST");
+    }
+
+    // Datos del cliente
+    doc.setTextColor(30, 41, 59);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("CLIENTE", 15, 50);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Nombre: ${selectedCliente?.nombre || "No especificado"}`, 15, 57);
+    if (selectedCliente?.dni_cuit) {
+      doc.text(`DNI/CUIT: ${selectedCliente.dni_cuit}`, 15, 63);
+    }
+    if (selectedCliente?.direccion) {
+      doc.text(`Dirección: ${selectedCliente.direccion}`, 15, 69);
+    }
+
+    // Tabla de ítems
     const tableBody = filas.map((f) => [
       f.cantidad.toString(),
       f.descripcion,
@@ -81,43 +121,68 @@ export default function Presupuesto() {
     ]);
 
     autoTable(doc, {
-      head: [["Cantidad", "Descripción", "P. Unitario", "Subtotal"]],
+      head: [["Cant.", "Descripción", "P. Unitario", "Subtotal"]],
       body: tableBody,
-      startY: 55,
+      startY: 80,
+      headStyles: { fillColor: [44, 62, 80], textColor: 255, fontStyle: "bold" },
+      bodyStyles: { textColor: 50 },
+      alternateRowStyles: { fillColor: [245, 247, 250] },
       foot: [
         [
           {
             content: "TOTAL",
             colSpan: 3,
-            styles: { halign: "right", fontStyle: "bold" },
+            styles: { halign: "right", fontStyle: "bold", textColor: 255 },
           },
           {
             content: `$${calcularTotal().toFixed(2)}`,
-            styles: { fontStyle: "bold" },
+            styles: { fontStyle: "bold", textColor: 255 },
           },
         ],
       ],
-      footStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+      footStyles: { fillColor: [44, 62, 80] },
     });
 
-    const finalY = doc.lastAutoTable.finalY + 10;
+    const finalY = doc.lastAutoTable.finalY + 15;
 
+    // Datos de pago
     if (selectedPerfil) {
       let y = finalY;
+      doc.setFillColor(248, 250, 252);
+      doc.rect(10, y - 5, 190, 35, "F");
+
       doc.setFont("helvetica", "bold");
-      doc.text("DATOS DE PAGO", 10, y);
-      y += 6;
+      doc.setTextColor(30, 41, 59);
+      doc.text("DATOS DE PAGO", 15, y);
+      y += 8;
+
       doc.setFont("helvetica", "normal");
-      doc.text(`Alias: ${selectedPerfil.alias}`, 10, y);
+      doc.setFontSize(9);
+      doc.text(`Beneficiario: ${selectedPerfil.beneficiario}`, 15, y);
+      doc.text(`Banco: ${selectedPerfil.banco || "-"}`, 105, y);
       y += 6;
-      doc.text(`Beneficiario: ${selectedPerfil.beneficiario}`, 10, y);
-      y += 6;
-      doc.text(`Banco: ${selectedPerfil.banco || "-"}`, 10, y);
-      y += 6;
-      doc.text(`CBU/Alias: ${selectedPerfil.cbu_alias || "-"}`, 10, y);
+      doc.text(`Alias: ${selectedPerfil.alias}`, 15, y);
+      doc.text(`CBU/CVU: ${selectedPerfil.cbu_alias || "-"}`, 105, y);
     }
 
-    doc.save(`presupuesto_${contador}.pdf`);
+    // Observaciones
+    if (observaciones) {
+      let y = selectedPerfil ? finalY + 40 : finalY;
+      doc.setFont("helvetica", "bold");
+      doc.text("OBSERVACIONES", 15, y);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      // split text to fit line
+      const textLines = doc.splitTextToSize(observaciones, 180);
+      doc.text(textLines, 15, y + 6);
+    }
+
+    // Pie de página
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text("Gracias por confiar en nosotros.", 105, 285, { align: "center" });
+
+    doc.save(`Presupuesto_${numReal.toString().padStart(6, "0")}.pdf`);
   };
 
   const handleGuardar = async () => {

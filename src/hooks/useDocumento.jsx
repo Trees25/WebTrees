@@ -39,13 +39,31 @@ export function useDocumento(tipo) {
 
   const obtenerContador = async () => {
     if (!profile?.empresa_id) return;
-    const { count } = await supabase
-      .from("documentos")
-      .select("*", { count: "exact", head: true })
-      .eq("tipo", tipo)
-      .eq("empresa_id", profile.empresa_id);
+    const sig = await obtenerSiguienteNumero();
+    setContador(sig);
+  };
 
-    setContador((count || 0) + 1);
+  const obtenerSiguienteNumero = async () => {
+    if (!profile?.empresa_id) return 1;
+    const { data, error } = await supabase
+      .from("documentos")
+      .select("numero")
+      .eq("tipo", tipo)
+      .eq("empresa_id", profile.empresa_id)
+      .order("numero", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) {
+      // Si no hay documentos o hay un error al buscar, usamos el conteo como fallback
+      const { count } = await supabase
+        .from("documentos")
+        .select("*", { count: "exact", head: true })
+        .eq("tipo", tipo)
+        .eq("empresa_id", profile.empresa_id);
+      return (count || 0) + 1;
+    }
+    return (data.numero || 0) + 1;
   };
 
   const listarDocumentos = async () => {
@@ -122,12 +140,19 @@ export function useDocumento(tipo) {
     if (!profile?.empresa_id) return alert("No tenés una empresa asociada.");
     setLoading(true);
     try {
+      let numeroFinal = data.numero;
+      if (!id) {
+        numeroFinal = await obtenerSiguienteNumero();
+      } else {
+        numeroFinal = data.numero || contador;
+      }
+
       const { error: errorDoc, data: doc } = await supabase
         .from("documentos")
         .upsert({
           id: id || undefined,
           tipo,
-          numero: data.numero || contador,
+          numero: numeroFinal,
           // Si el cliente_id es string vacio u omitido, lo enviamos nulo.
           cliente_id: data.cliente_id || null,
           fecha: data.fecha,
@@ -208,5 +233,6 @@ export function useDocumento(tipo) {
     cargarServicios,
     servicios,
     setFilas,
+    obtenerSiguienteNumero,
   };
 }
