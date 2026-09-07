@@ -18,6 +18,8 @@ export default function AdminProyectos() {
     fecha_limite: "",
     cliente_id: "",
     desarrolladores_ids: [],
+    incluye_hardware: false,
+    costo_hardware: 0,
   });
   const [nuevoClienteMode, setNuevoClienteMode] = useState(false);
   const [nuevoCliente, setNuevoCliente] = useState({ nombre: "", dni_cuit: "", telefono: "" });
@@ -122,6 +124,8 @@ export default function AdminProyectos() {
         mensualidad: nuevoProyecto.mensualidad,
         fecha_limite: nuevoProyecto.fecha_limite || null,
         cliente_id: cliente_id_final,
+        incluye_hardware: nuevoProyecto.incluye_hardware,
+        costo_hardware: nuevoProyecto.costo_hardware || 0,
       }).eq("id", proyectoEditando.id);
       
       if (error) {
@@ -148,7 +152,9 @@ export default function AdminProyectos() {
         mensualidad: nuevoProyecto.mensualidad,
         fecha_limite: nuevoProyecto.fecha_limite || null,
         cliente_id: cliente_id_final,
-        empresa_id: profile.empresa_id
+        empresa_id: profile.empresa_id,
+        incluye_hardware: nuevoProyecto.incluye_hardware,
+        costo_hardware: nuevoProyecto.costo_hardware || 0,
       }]).select().single();
 
       if (error) {
@@ -170,7 +176,7 @@ export default function AdminProyectos() {
 
   const resetFormProyecto = () => {
     setNuevoProyecto({
-      nombre: "", estado: "en_desarrollo", tipo_proyecto: "Otro", valor_total: 0, mensualidad: 0, fecha_limite: "", cliente_id: "", desarrolladores_ids: []
+      nombre: "", estado: "en_desarrollo", tipo_proyecto: "Otro", valor_total: 0, mensualidad: 0, fecha_limite: "", cliente_id: "", desarrolladores_ids: [], incluye_hardware: false, costo_hardware: 0
     });
     setNuevoClienteMode(false);
     setNuevoDevMode(false);
@@ -194,6 +200,8 @@ export default function AdminProyectos() {
       fecha_limite: proyecto.fecha_limite || "",
       cliente_id: proyecto.cliente_id || "",
       desarrolladores_ids: devsAsignados,
+      incluye_hardware: proyecto.incluye_hardware || false,
+      costo_hardware: proyecto.costo_hardware || 0,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -382,12 +390,26 @@ export default function AdminProyectos() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Valor Total ($)</label>
-                    <input type="number" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none" value={nuevoProyecto.valor_total} onChange={e => setNuevoProyecto({...nuevoProyecto, valor_total: e.target.value})} />
+                    <input type="number" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 dark:bg-slate-900 dark:text-slate-100" value={nuevoProyecto.valor_total} onChange={e => setNuevoProyecto({...nuevoProyecto, valor_total: e.target.value})} />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Mensualidad ($)</label>
-                    <input type="number" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none" value={nuevoProyecto.mensualidad} onChange={e => setNuevoProyecto({...nuevoProyecto, mensualidad: e.target.value})} />
+                    <input type="number" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 dark:bg-slate-900 dark:text-slate-100" value={nuevoProyecto.mensualidad} onChange={e => setNuevoProyecto({...nuevoProyecto, mensualidad: e.target.value})} />
                   </div>
+                </div>
+
+                <div className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg">
+                  <label className="flex items-center gap-2 cursor-pointer mb-2">
+                    <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded" checked={nuevoProyecto.incluye_hardware} onChange={e => setNuevoProyecto({...nuevoProyecto, incluye_hardware: e.target.checked})} />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Este proyecto incluye venta de Hardware</span>
+                  </label>
+                  {nuevoProyecto.incluye_hardware && (
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Costo del Hardware ($)</label>
+                      <input type="number" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 dark:bg-slate-900 dark:text-slate-100" value={nuevoProyecto.costo_hardware} onChange={e => setNuevoProyecto({...nuevoProyecto, costo_hardware: e.target.value})} />
+                      <p className="text-xs text-slate-500 mt-1">Este es el valor que te costó el hardware, para calcular la ganancia neta luego.</p>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -483,9 +505,11 @@ export default function AdminProyectos() {
                 {proyectosFiltrados.map((proyecto) => {
                   const pagosProyecto = proyecto.pagos_proyectos?.filter(p => p.tipo_pago === 'proyecto' || !p.tipo_pago) || [];
                   const pagosMensualidad = proyecto.pagos_proyectos?.filter(p => p.tipo_pago === 'mensualidad') || [];
+                  const pagosHardware = proyecto.pagos_proyectos?.filter(p => p.tipo_pago === 'hardware') || [];
                   
                   const totalPagadoProyecto = pagosProyecto.reduce((acc, p) => acc + Number(p.monto), 0);
                   const totalPagadoMensualidad = pagosMensualidad.reduce((acc, p) => acc + Number(p.monto), 0);
+                  const totalCobradoHardware = pagosHardware.reduce((acc, p) => acc + Number(p.monto), 0);
                   
                   const saldoRestante = Number(proyecto.valor_total) - totalPagadoProyecto;
                   const fechaLimiteFormat = proyecto.fecha_limite ? new Date(proyecto.fecha_limite) : null;
@@ -525,6 +549,17 @@ export default function AdminProyectos() {
                         {totalPagadoMensualidad > 0 && (
                           <p className="text-xs text-indigo-600 mt-1 font-semibold">Total cobrado de Mensualidades: ${totalPagadoMensualidad}</p>
                         )}
+                        {proyecto.incluye_hardware && (
+                          <div className="mt-2 p-2 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded">
+                            <p className="text-xs text-purple-700 dark:text-purple-300 font-semibold flex flex-wrap gap-2">
+                              <span>Hardware Cobrado: ${totalCobradoHardware}</span>
+                              <span className="text-purple-400">|</span>
+                              <span>Costo: ${proyecto.costo_hardware || 0}</span>
+                              <span className="text-purple-400">|</span>
+                              <span>Ganancia Neta: <span className="font-bold text-emerald-600 dark:text-emerald-400">${totalCobradoHardware - (proyecto.costo_hardware || 0)}</span></span>
+                            </p>
+                          </div>
+                        )}
                         {proyecto.fecha_limite && (
                           <p className={`text-xs mt-1 font-semibold ${esFechaCercana ? 'text-red-600' : 'text-slate-500 dark:text-slate-400'}`}>
                             Límite: {new Date(proyecto.fecha_limite).toLocaleDateString()} {esFechaCercana && '⚠️ ¡Alerta!'}
@@ -539,14 +574,14 @@ export default function AdminProyectos() {
                             <div className="mt-2 pl-4 border-l-2 border-indigo-100 space-y-2">
                               {proyecto.pagos_proyectos.map(pago => (
                                 pagoProyectoEditando === pago.id ? (
-                                  <form key={pago.id} onSubmit={(e) => guardarEdicionPago(e, pago.id)} className="flex items-center gap-2 bg-indigo-50 p-2 rounded border border-indigo-100 shadow-sm text-xs">
-                                    <input type="date" required className="px-2 py-1 border border-slate-300 rounded outline-none" value={edicionPagoForm.fecha_pago} onChange={e => setEdicionPagoForm({...edicionPagoForm, fecha_pago: e.target.value})} />
+                                  <form key={pago.id} onSubmit={(e) => guardarEdicionPago(e, pago.id)} className="flex flex-wrap sm:flex-nowrap items-center gap-2 bg-indigo-50 dark:bg-slate-800/50 p-2 rounded border border-indigo-100 dark:border-slate-700 shadow-sm text-xs">
+                                    <input type="date" required className="px-2 py-1 border border-slate-300 dark:border-slate-600 rounded outline-none bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100" value={edicionPagoForm.fecha_pago} onChange={e => setEdicionPagoForm({...edicionPagoForm, fecha_pago: e.target.value})} />
                                     <span className="font-bold text-slate-600 dark:text-slate-300 uppercase hidden sm:inline">{pago.tipo_pago || 'proyecto'}</span>
                                     <span className="font-bold text-slate-800 dark:text-slate-100">$</span>
-                                    <input type="number" required min="1" className="w-20 px-2 py-1 border border-slate-300 rounded outline-none" value={edicionPagoForm.monto} onChange={e => setEdicionPagoForm({...edicionPagoForm, monto: e.target.value})} />
+                                    <input type="number" required min="1" className="w-20 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded outline-none bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100" value={edicionPagoForm.monto} onChange={e => setEdicionPagoForm({...edicionPagoForm, monto: e.target.value})} />
                                     <div className="flex gap-1 ml-auto">
                                       <button type="submit" className="bg-emerald-600 text-white px-2 py-1 rounded font-bold hover:bg-emerald-700">Guardar</button>
-                                      <button type="button" onClick={() => setPagoProyectoEditando(null)} className="bg-slate-200 text-slate-700 dark:text-slate-200 px-2 py-1 rounded font-bold hover:bg-slate-300">Cancelar</button>
+                                      <button type="button" onClick={() => setPagoProyectoEditando(null)} className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-2 py-1 rounded font-bold hover:bg-slate-300 dark:hover:bg-slate-600">Cancelar</button>
                                     </div>
                                   </form>
                                 ) : (
@@ -554,7 +589,7 @@ export default function AdminProyectos() {
                                     <div>
                                       <span className="font-semibold text-slate-700 dark:text-slate-200">{pago.fecha_pago ? new Date(pago.fecha_pago).toLocaleDateString() : 'N/A'}</span>
                                       <span className="mx-2 text-slate-400">|</span>
-                                      <span className={`uppercase font-bold ${pago.tipo_pago === 'mensualidad' ? 'text-indigo-600' : 'text-emerald-600'}`}>
+                                      <span className={`uppercase font-bold ${pago.tipo_pago === 'mensualidad' ? 'text-indigo-600' : pago.tipo_pago === 'hardware' ? 'text-purple-600' : 'text-emerald-600'}`}>
                                         {pago.tipo_pago || 'proyecto'}
                                       </span>
                                       <span className="mx-2 text-slate-400">|</span>
@@ -578,12 +613,15 @@ export default function AdminProyectos() {
                         </button>
                         {pagoMode === proyecto.id ? (
                           <form onSubmit={handleRegistrarPago} className="flex flex-col gap-2 bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-                            <div className="flex items-center gap-3">
-                              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                            <div className="flex flex-wrap items-center gap-3">
+                              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1 cursor-pointer">
                                 <input type="radio" name="tipoPago" value="proyecto" checked={tipoPago === 'proyecto'} onChange={(e) => setTipoPago(e.target.value)} /> Proyecto
                               </label>
-                              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1 cursor-pointer">
                                 <input type="radio" name="tipoPago" value="mensualidad" checked={tipoPago === 'mensualidad'} onChange={(e) => setTipoPago(e.target.value)} /> Mensualidad
+                              </label>
+                              <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1 cursor-pointer">
+                                <input type="radio" name="tipoPago" value="hardware" checked={tipoPago === 'hardware'} onChange={(e) => setTipoPago(e.target.value)} /> Hardware
                               </label>
                             </div>
                             <div className="flex items-center gap-2">

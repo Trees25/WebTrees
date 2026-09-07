@@ -24,6 +24,8 @@ export default function AdminBalance() {
   const [totalesGrupales, setTotalesGrupales] = useState({ ingresos: 0, egresos: 0 });
   const [loading, setLoading] = useState(false);
   const [filtroTipo, setFiltroTipo] = useState("Todos");
+  const [filtroMes, setFiltroMes] = useState("Todos");
+  const [mesesDisponibles, setMesesDisponibles] = useState([]);
   const [datosCrudos, setDatosCrudos] = useState({ ingresos: [], egresos: [], proyectosMap: {} });
   
   const navigate = useNavigate();
@@ -99,7 +101,7 @@ export default function AdminBalance() {
     if (datosCrudos.ingresos.length > 0 || datosCrudos.egresos.length > 0) {
       procesarDatos();
     }
-  }, [datosCrudos, filtroTipo]);
+  }, [datosCrudos, filtroTipo, filtroMes]);
 
   const procesarDatos = () => {
     const { ingresos, egresos, proyectosMap } = datosCrudos;
@@ -138,10 +140,15 @@ export default function AdminBalance() {
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
 
-    setDatosMensuales(resultadoArray);
+    const mesesArray = resultadoArray.map(r => r.name);
+    setMesesDisponibles(mesesArray);
+
+    const datosFiltrados = filtroMes === "Todos" ? resultadoArray : resultadoArray.filter(r => r.name === filtroMes);
+
+    setDatosMensuales(datosFiltrados);
     
-    const totalIng = resultadoArray.reduce((acc, i) => acc + i.ingresos, 0);
-    const totalEgr = resultadoArray.reduce((acc, i) => acc + i.egresos, 0);
+    const totalIng = datosFiltrados.reduce((acc, i) => acc + i.ingresos, 0);
+    const totalEgr = datosFiltrados.reduce((acc, i) => acc + i.egresos, 0);
     setTotalesGrupales({ ingresos: totalIng, egresos: totalEgr });
   };
 
@@ -182,23 +189,40 @@ export default function AdminBalance() {
           </button>
         </div>
         
-        {/* Filtro por Tipo de Proyecto */}
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 mb-8 flex flex-col md:flex-row md:items-center gap-4">
-          <label className="text-sm font-bold text-slate-700 dark:text-slate-200">Filtrar Balance por Tipo de Proyecto:</label>
-          <select
-            className="px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm font-medium text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900"
-            value={filtroTipo}
-            onChange={(e) => setFiltroTipo(e.target.value)}
-          >
-            <option value="Todos">Todos (Incluye gastos fijos generales)</option>
-            <option value="Sistema">Sistema</option>
-            <option value="Página Web">Página Web</option>
-            <option value="Aplicación Móvil">Aplicación Móvil</option>
-            <option value="E-Commerce">E-Commerce</option>
-            <option value="Otro">Otro</option>
-          </select>
-          <span className="text-xs text-slate-500 dark:text-slate-400 italic">
-            * Si filtras, los gastos mensuales sin proyecto se ocultarán temporalmente.
+        {/* Filtros */}
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 mb-8 flex flex-col md:flex-row md:items-center gap-6">
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <label className="text-sm font-bold text-slate-700 dark:text-slate-200">Tipo de Proyecto:</label>
+            <select
+              className="px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm font-medium text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900"
+              value={filtroTipo}
+              onChange={(e) => setFiltroTipo(e.target.value)}
+            >
+              <option value="Todos">Todos (Incluye gastos fijos)</option>
+              <option value="Sistema">Sistema</option>
+              <option value="Página Web">Página Web</option>
+              <option value="Aplicación Móvil">Aplicación Móvil</option>
+              <option value="E-Commerce">E-Commerce</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <label className="text-sm font-bold text-slate-700 dark:text-slate-200">Mes:</label>
+            <select
+              className="px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm font-medium text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-900"
+              value={filtroMes}
+              onChange={(e) => setFiltroMes(e.target.value)}
+            >
+              <option value="Todos">Todos los meses</option>
+              {mesesDisponibles.map(m => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+          </div>
+          
+          <span className="text-xs text-slate-500 dark:text-slate-400 italic md:ml-auto">
+            * Gastos sin proyecto se ocultan al filtrar por tipo.
           </span>
         </div>
 

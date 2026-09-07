@@ -104,7 +104,7 @@ export default function Recibo() {
 
     // Diseño del PDF
     // Encabezado
-    doc.setFillColor(6, 78, 59); // emerald-900 (cambiamos color para recibo)
+    doc.setFillColor(37, 99, 235); // blue-600
     doc.rect(0, 0, 210, 40, "F");
 
     doc.setTextColor(255, 255, 255);
@@ -143,9 +143,9 @@ export default function Recibo() {
       head: [["Cant.", "Descripción", "Importe", "Subtotal"]],
       body: tableBody,
       startY: 70,
-      headStyles: { fillColor: [5, 150, 105], textColor: 255, fontStyle: "bold" },
+      headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: "bold" },
       bodyStyles: { textColor: 50 },
-      alternateRowStyles: { fillColor: [240, 253, 244] },
+      alternateRowStyles: { fillColor: [239, 246, 255] },
       foot: [
         [
           {
@@ -159,7 +159,7 @@ export default function Recibo() {
           },
         ],
       ],
-      footStyles: { fillColor: [5, 150, 105] },
+      footStyles: { fillColor: [59, 130, 246] },
     });
 
     // Observaciones
