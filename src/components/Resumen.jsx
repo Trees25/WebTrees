@@ -159,7 +159,8 @@ export default function Resumen() {
     const pdf = new jsPDF();
     const isRecibo = doc.tipo === "recibo";
 
-    const [year, month, day] = doc.fecha.split("-");
+    const fechaLimpia = doc.fecha.includes('T') ? doc.fecha.split('T')[0] : doc.fecha;
+    const [year, month, day] = fechaLimpia.split("-");
     const fechaFormateada = `${day}/${month}/${year}`;
 
     let logoBase64 = null;

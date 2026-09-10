@@ -43,7 +43,7 @@ export default function AdminBalance() {
     // 1. Buscar los proyectos de la empresa actual
     const { data: proyectosData } = await supabase
       .from("proyectos")
-      .select("id, tipo_proyecto")
+      .select("id, tipo_proyecto, fecha_inicio")
       .eq("empresa_id", profile.empresa_id);
     
     const proyectosMap = {};
@@ -59,7 +59,7 @@ export default function AdminBalance() {
       // Ingresos (pagos de clientes)
       const { data: pagosProyectos } = await supabase
         .from("pagos_proyectos")
-        .select("monto, fecha_pago, proyecto_id")
+        .select("monto, fecha_pago, proyecto_id, tipo_pago")
         .in("proyecto_id", proyectosIds);
       if (pagosProyectos) ingresos = pagosProyectos;
     }
@@ -103,6 +103,31 @@ export default function AdminBalance() {
     }
   }, [datosCrudos, filtroTipo, filtroMes]);
 
+  const obtenerMesLocal = (fechaString) => {
+    if (!fechaString) return "Sin Fecha";
+    try {
+      // Si la fecha viene como YYYY-MM-DD puro de una columna "date" de postgres
+      if (fechaString.length === 10) {
+        const [y, m, d] = fechaString.split('-');
+        return `${y}-${m}`;
+      }
+
+      // Si la fecha vieja se guardó a las 00:00:00Z, parsearla normal resta un día (y posiblemente un mes).
+      if (fechaString.endsWith('T00:00:00Z') || fechaString.endsWith('T00:00:00+00:00')) {
+        const parteFecha = fechaString.split('T')[0];
+        const [y, m, d] = parteFecha.split('-');
+        return `${y}-${m}`;
+      }
+      const d = new Date(fechaString);
+      if (isNaN(d.getTime())) return "Sin Fecha";
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      return `${year}-${month}`;
+    } catch (e) {
+      return "Sin Fecha";
+    }
+  };
+
   const procesarDatos = () => {
     const { ingresos, egresos, proyectosMap } = datosCrudos;
     
@@ -120,16 +145,20 @@ export default function AdminBalance() {
     const agrupado = {};
 
     ingresosFiltrados.forEach(ingreso => {
-      if (!ingreso.fecha_pago) return;
-      const mes = new Date(ingreso.fecha_pago).toISOString().slice(0, 7);
-      if (!agrupado[mes]) agrupado[mes] = { name: mes, ingresos: 0, egresos: 0 };
-      agrupado[mes].ingresos += Number(ingreso.monto);
+      const mes = obtenerMesLocal(ingreso.fecha_pago);
+      if (!agrupado[mes]) agrupado[mes] = { name: mes, ingresos: 0, ingresosProy: 0, ingresosMensual: 0, ingresosHard: 0, egresos: 0 };
+      
+      const val = Number(ingreso.monto);
+      agrupado[mes].ingresos += val;
+      
+      if (ingreso.tipo_pago === 'mensualidad') agrupado[mes].ingresosMensual += val;
+      else if (ingreso.tipo_pago === 'hardware') agrupado[mes].ingresosHard += val;
+      else agrupado[mes].ingresosProy += val;
     });
 
     egresosFiltrados.forEach(egreso => {
-      if (!egreso.mes) return;
-      const mes = egreso.mes; // Ya viene en YYYY-MM
-      if (!agrupado[mes]) agrupado[mes] = { name: mes, ingresos: 0, egresos: 0 };
+      const mes = egreso.es_hardware ? egreso.mes : (egreso.mes || "Sin Fecha");
+      if (!agrupado[mes]) agrupado[mes] = { name: mes, ingresos: 0, ingresosProy: 0, ingresosMensual: 0, ingresosHard: 0, egresos: 0 };
       agrupado[mes].egresos += Number(egreso.monto);
     });
 
@@ -261,7 +290,13 @@ export default function AdminBalance() {
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                         <XAxis dataKey="name" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
                         <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
-                        <Tooltip cursor={{ fill: '#f1f5f9' }} formatter={(value) => formatearDinero(value)} />
+                        <Tooltip 
+                          cursor={{ fill: 'rgba(241, 245, 249, 0.1)' }} 
+                          formatter={(value) => formatearDinero(value)}
+                          contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#f8fafc', borderRadius: '0.75rem', padding: '10px' }}
+                          itemStyle={{ color: '#e2e8f0', fontWeight: 'bold' }}
+                          labelStyle={{ color: '#94a3b8', fontWeight: 'bold', marginBottom: '5px' }}
+                        />
                         <Legend iconType="circle" />
                         <Bar dataKey="ingresos" name="Ingresos" fill="#10b981" radius={[4, 4, 0, 0]} />
                         <Bar dataKey="egresos" name="Egresos" fill="#ef4444" radius={[4, 4, 0, 0]} />
@@ -279,7 +314,12 @@ export default function AdminBalance() {
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                         <XAxis dataKey="name" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
                         <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
-                        <Tooltip formatter={(value) => formatearDinero(value)} />
+                        <Tooltip 
+                          formatter={(value) => formatearDinero(value)}
+                          contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#f8fafc', borderRadius: '0.75rem', padding: '10px' }}
+                          itemStyle={{ color: '#e2e8f0', fontWeight: 'bold' }}
+                          labelStyle={{ color: '#94a3b8', fontWeight: 'bold', marginBottom: '5px' }}
+                        />
                         <Legend iconType="circle" />
                         <Line type="monotone" dataKey="balance" name="Balance Neto" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
                       </LineChart>
@@ -309,7 +349,11 @@ export default function AdminBalance() {
                            <Cell key={`cell-${index}`} fill={color} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(value) => formatearDinero(value)} />
+                        <Tooltip 
+                          formatter={(value) => formatearDinero(value)}
+                          contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#f8fafc', borderRadius: '0.75rem', padding: '10px' }}
+                          itemStyle={{ color: '#e2e8f0', fontWeight: 'bold' }}
+                        />
                         <Legend verticalAlign="bottom" height={36} />
                       </PieChart>
                     </ResponsiveContainer>
@@ -333,8 +377,8 @@ export default function AdminBalance() {
                   <table className="w-full text-left">
                     <thead>
                       <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
-                        <th className="py-3 px-6 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Mes</th>
-                        <th className="py-3 px-6 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase text-right">Ingresos</th>
+                        <th className="py-3 px-6 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase text-right">Mes</th>
+                        <th className="py-3 px-6 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase text-right">Ingresos (Desglose)</th>
                         <th className="py-3 px-6 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase text-right">Egresos</th>
                         <th className="py-3 px-6 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase text-right">Balance Neto</th>
                       </tr>
@@ -342,8 +386,13 @@ export default function AdminBalance() {
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                       {datosMensuales.map((mes, idx) => (
                         <tr key={idx} className="hover:bg-slate-50 dark:bg-slate-950">
-                          <td className="py-3 px-6 text-sm font-bold text-slate-800 dark:text-slate-100">{mes.name}</td>
-                          <td className="py-3 px-6 text-sm font-semibold text-emerald-600 text-right">{formatearDinero(mes.ingresos)}</td>
+                          <td className="py-3 px-6 text-sm font-bold text-slate-800 dark:text-slate-100 text-right">{mes.name}</td>
+                          <td className="py-3 px-6 text-sm font-semibold text-emerald-600 text-right">
+                            <div>{formatearDinero(mes.ingresos)}</div>
+                            <div className="text-[10px] text-emerald-500 font-normal">
+                              Proy: {formatearDinero(mes.ingresosProy)} | Mens: {formatearDinero(mes.ingresosMensual)} | Hard: {formatearDinero(mes.ingresosHard)}
+                            </div>
+                          </td>
                           <td className="py-3 px-6 text-sm font-semibold text-red-500 text-right">{formatearDinero(mes.egresos)}</td>
                           <td className={`py-3 px-6 text-sm font-bold text-right ${mes.balance >= 0 ? 'text-indigo-600' : 'text-red-600'}`}>
                             {formatearDinero(mes.balance)}

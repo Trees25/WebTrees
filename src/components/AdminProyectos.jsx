@@ -12,14 +12,11 @@ export default function AdminProyectos() {
   const [nuevoProyecto, setNuevoProyecto] = useState({
     nombre: "",
     estado: "en_desarrollo",
-    tipo_proyecto: "Otro",
     valor_total: 0,
     mensualidad: 0,
-    fecha_limite: "",
+    fecha_inicio: "",
     cliente_id: "",
     desarrolladores_ids: [],
-    incluye_hardware: false,
-    costo_hardware: 0,
   });
   const [nuevoClienteMode, setNuevoClienteMode] = useState(false);
   const [nuevoCliente, setNuevoCliente] = useState({ nombre: "", dni_cuit: "", telefono: "" });
@@ -28,6 +25,7 @@ export default function AdminProyectos() {
   const [pagoMode, setPagoMode] = useState(null);
   const [montoPago, setMontoPago] = useState(0);
   const [tipoPago, setTipoPago] = useState("proyecto");
+  const [fechaPagoNuevo, setFechaPagoNuevo] = useState("");
   const [proyectoEditando, setProyectoEditando] = useState(null);
   const [pagoProyectoEditando, setPagoProyectoEditando] = useState(null);
   const [edicionPagoForm, setEdicionPagoForm] = useState({ monto: 0, fecha_pago: "" });
@@ -36,6 +34,47 @@ export default function AdminProyectos() {
   const [filtroFecha, setFiltroFecha] = useState("");
 
   const navigate = useNavigate();
+
+  // Helper functions for reliable local date rendering
+  const mostrarFecha = (fechaStr) => {
+    if (!fechaStr) return "N/A";
+    
+    // Si viene directo de una columna 'date' de Postgres es "YYYY-MM-DD" exacto
+    if (fechaStr.length === 10) {
+      const [y, m, d] = fechaStr.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    if (fechaStr.endsWith('T00:00:00Z') || fechaStr.endsWith('T00:00:00+00:00')) {
+      const [y, m, d] = fechaStr.split('T')[0].split('-');
+      return `${d}/${m}/${y}`;
+    }
+    return new Date(fechaStr).toLocaleDateString();
+  };
+
+  const getFechaInput = (fechaStr) => {
+    if (!fechaStr) return "";
+
+    // Si viene directo de una columna 'date' de Postgres es "YYYY-MM-DD"
+    if (fechaStr.length === 10) {
+      return fechaStr;
+    }
+
+    if (fechaStr.endsWith('T00:00:00Z') || fechaStr.endsWith('T00:00:00+00:00')) {
+      return fechaStr.split('T')[0];
+    }
+    const d = new Date(fechaStr);
+    if (isNaN(d.getTime())) return "";
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  const combinarFechaConHoraActual = (fechaStringYMD) => {
+    if (!fechaStringYMD) return null;
+    const [year, month, day] = fechaStringYMD.split('-');
+    const d = new Date();
+    d.setFullYear(Number(year), Number(month) - 1, Number(day));
+    return d.toISOString();
+  };
   const { profile, loading: profileLoading } = useProfile();
 
   useEffect(() => {
@@ -55,7 +94,7 @@ export default function AdminProyectos() {
       .from("proyectos")
       .select("*, clientes(nombre), pagos_proyectos(id, monto, tipo_pago, fecha_pago), proyectos_desarrolladores(desarrolladores(id, nombre))")
       .eq("empresa_id", profile.empresa_id)
-      .order("creado_en", { ascending: false });
+      .order("fecha_inicio", { ascending: false, nullsFirst: false });
     
     if (data) setProyectos(data);
   };
@@ -122,10 +161,8 @@ export default function AdminProyectos() {
         tipo_proyecto: nuevoProyecto.tipo_proyecto,
         valor_total: nuevoProyecto.valor_total,
         mensualidad: nuevoProyecto.mensualidad,
-        fecha_limite: nuevoProyecto.fecha_limite || null,
+        fecha_inicio: combinarFechaConHoraActual(nuevoProyecto.fecha_inicio),
         cliente_id: cliente_id_final,
-        incluye_hardware: nuevoProyecto.incluye_hardware,
-        costo_hardware: nuevoProyecto.costo_hardware || 0,
       }).eq("id", proyectoEditando.id);
       
       if (error) {
@@ -150,11 +187,9 @@ export default function AdminProyectos() {
         tipo_proyecto: nuevoProyecto.tipo_proyecto,
         valor_total: nuevoProyecto.valor_total,
         mensualidad: nuevoProyecto.mensualidad,
-        fecha_limite: nuevoProyecto.fecha_limite || null,
+        fecha_inicio: combinarFechaConHoraActual(nuevoProyecto.fecha_inicio),
         cliente_id: cliente_id_final,
         empresa_id: profile.empresa_id,
-        incluye_hardware: nuevoProyecto.incluye_hardware,
-        costo_hardware: nuevoProyecto.costo_hardware || 0,
       }]).select().single();
 
       if (error) {
@@ -176,7 +211,7 @@ export default function AdminProyectos() {
 
   const resetFormProyecto = () => {
     setNuevoProyecto({
-      nombre: "", estado: "en_desarrollo", tipo_proyecto: "Otro", valor_total: 0, mensualidad: 0, fecha_limite: "", cliente_id: "", desarrolladores_ids: [], incluye_hardware: false, costo_hardware: 0
+      nombre: "", estado: "en_desarrollo", tipo_proyecto: "Otro", valor_total: 0, mensualidad: 0, fecha_inicio: "", cliente_id: "", desarrolladores_ids: []
     });
     setNuevoClienteMode(false);
     setNuevoDevMode(false);
@@ -197,11 +232,9 @@ export default function AdminProyectos() {
       tipo_proyecto: proyecto.tipo_proyecto || "Otro",
       valor_total: proyecto.valor_total,
       mensualidad: proyecto.mensualidad,
-      fecha_limite: proyecto.fecha_limite || "",
+      fecha_inicio: getFechaInput(proyecto.fecha_inicio),
       cliente_id: proyecto.cliente_id || "",
       desarrolladores_ids: devsAsignados,
-      incluye_hardware: proyecto.incluye_hardware || false,
-      costo_hardware: proyecto.costo_hardware || 0,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -215,13 +248,24 @@ export default function AdminProyectos() {
 
   const handleRegistrarPago = async (e) => {
     e.preventDefault();
-    if (!pagoMode || montoPago <= 0) return;
+    if (!pagoMode || Number(montoPago) <= 0) {
+      alert("El monto del pago debe ser mayor a 0.");
+      return;
+    }
 
-    const { error } = await supabase.from("pagos_proyectos").insert([{
+    const payload = {
       proyecto_id: pagoMode,
-      monto: montoPago,
+      monto: Number(montoPago),
       tipo_pago: tipoPago
-    }]);
+    };
+    
+    if (fechaPagoNuevo) {
+      payload.fecha_pago = combinarFechaConHoraActual(fechaPagoNuevo);
+    } else {
+      payload.fecha_pago = new Date().toISOString();
+    }
+
+    const { error } = await supabase.from("pagos_proyectos").insert([payload]);
 
     if (error) {
       alert("Error al registrar pago: " + error.message);
@@ -229,6 +273,7 @@ export default function AdminProyectos() {
       setPagoMode(null);
       setMontoPago(0);
       setTipoPago("proyecto");
+      setFechaPagoNuevo("");
       cargarProyectos();
     }
   };
@@ -244,16 +289,19 @@ export default function AdminProyectos() {
     setPagoProyectoEditando(pago.id);
     setEdicionPagoForm({
       monto: pago.monto,
-      fecha_pago: pago.fecha_pago ? new Date(pago.fecha_pago).toISOString().split('T')[0] : ""
+      fecha_pago: getFechaInput(pago.fecha_pago)
     });
   };
 
   const guardarEdicionPago = async (e, pagoId) => {
     e.preventDefault();
-    if (edicionPagoForm.monto <= 0) return;
+    if (Number(edicionPagoForm.monto) <= 0) {
+      alert("El monto del pago debe ser mayor a 0.");
+      return;
+    }
     const payload = { monto: Number(edicionPagoForm.monto) };
     if (edicionPagoForm.fecha_pago) {
-      payload.fecha_pago = new Date(edicionPagoForm.fecha_pago).toISOString();
+      payload.fecha_pago = combinarFechaConHoraActual(edicionPagoForm.fecha_pago);
     }
     const { error } = await supabase.from("pagos_proyectos").update(payload).eq("id", pagoId);
     if (error) {
@@ -271,7 +319,7 @@ export default function AdminProyectos() {
       
     // Buscamos que la fecha de creación coincida con la fecha (formato YYYY-MM-DD)
     const matchFecha = filtroFecha === "" || 
-      (proyecto.creado_en && proyecto.creado_en.startsWith(filtroFecha));
+      (proyecto.creado_en && getFechaInput(proyecto.creado_en) === filtroFecha);
       
     return matchTexto && matchFecha;
   });
@@ -398,23 +446,9 @@ export default function AdminProyectos() {
                   </div>
                 </div>
 
-                <div className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg">
-                  <label className="flex items-center gap-2 cursor-pointer mb-2">
-                    <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded" checked={nuevoProyecto.incluye_hardware} onChange={e => setNuevoProyecto({...nuevoProyecto, incluye_hardware: e.target.checked})} />
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Este proyecto incluye venta de Hardware</span>
-                  </label>
-                  {nuevoProyecto.incluye_hardware && (
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Costo del Hardware ($)</label>
-                      <input type="number" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 dark:bg-slate-900 dark:text-slate-100" value={nuevoProyecto.costo_hardware} onChange={e => setNuevoProyecto({...nuevoProyecto, costo_hardware: e.target.value})} />
-                      <p className="text-xs text-slate-500 mt-1">Este es el valor que te costó el hardware, para calcular la ganancia neta luego.</p>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Fecha Límite</label>
-                  <input type="date" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none" value={nuevoProyecto.fecha_limite} onChange={e => setNuevoProyecto({...nuevoProyecto, fecha_limite: e.target.value})} />
+                <div className="grid grid-cols-2 gap-4">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Fecha de Inicio</label>
+                  <input type="date" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none" value={nuevoProyecto.fecha_inicio} onChange={e => setNuevoProyecto({...nuevoProyecto, fecha_inicio: e.target.value})} />
                 </div>
 
                 <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
@@ -512,11 +546,9 @@ export default function AdminProyectos() {
                   const totalCobradoHardware = pagosHardware.reduce((acc, p) => acc + Number(p.monto), 0);
                   
                   const saldoRestante = Number(proyecto.valor_total) - totalPagadoProyecto;
-                  const fechaLimiteFormat = proyecto.fecha_limite ? new Date(proyecto.fecha_limite) : null;
-                  const esFechaCercana = fechaLimiteFormat && (fechaLimiteFormat - new Date()) / (1000 * 60 * 60 * 24) <= 5;
                   
                   return (
-                    <div key={proyecto.id} className={`border ${esFechaCercana ? 'border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30' : 'border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950'} rounded-xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center transition-colors`}>
+                    <div key={proyecto.id} className={`border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center transition-colors`}>
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-bold text-slate-800 dark:text-slate-100 text-lg">{proyecto.nombre}</h4>
@@ -542,28 +574,21 @@ export default function AdminProyectos() {
                           </div>
                         )}
                         
-                        <p className="text-xs text-slate-400 mt-1">Creado el {new Date(proyecto.creado_en).toLocaleDateString()}</p>
+                        <p className="text-xs text-slate-400 mt-1">
+                          Iniciado el: {mostrarFecha(proyecto.fecha_inicio)} | Creado: {mostrarFecha(proyecto.creado_en)}
+                        </p>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                           Valor: ${proyecto.valor_total} | Pagado (Proyecto): <span className="text-emerald-600 font-bold">${totalPagadoProyecto}</span> | Resta: ${saldoRestante}
                         </p>
                         {totalPagadoMensualidad > 0 && (
                           <p className="text-xs text-indigo-600 mt-1 font-semibold">Total cobrado de Mensualidades: ${totalPagadoMensualidad}</p>
                         )}
-                        {proyecto.incluye_hardware && (
+                        {totalCobradoHardware > 0 && (
                           <div className="mt-2 p-2 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900 rounded">
                             <p className="text-xs text-purple-700 dark:text-purple-300 font-semibold flex flex-wrap gap-2">
                               <span>Hardware Cobrado: ${totalCobradoHardware}</span>
-                              <span className="text-purple-400">|</span>
-                              <span>Costo: ${proyecto.costo_hardware || 0}</span>
-                              <span className="text-purple-400">|</span>
-                              <span>Ganancia Neta: <span className="font-bold text-emerald-600 dark:text-emerald-400">${totalCobradoHardware - (proyecto.costo_hardware || 0)}</span></span>
                             </p>
                           </div>
-                        )}
-                        {proyecto.fecha_limite && (
-                          <p className={`text-xs mt-1 font-semibold ${esFechaCercana ? 'text-red-600' : 'text-slate-500 dark:text-slate-400'}`}>
-                            Límite: {new Date(proyecto.fecha_limite).toLocaleDateString()} {esFechaCercana && '⚠️ ¡Alerta!'}
-                          </p>
                         )}
                         
                         {proyecto.pagos_proyectos?.length > 0 && (
@@ -587,7 +612,7 @@ export default function AdminProyectos() {
                                 ) : (
                                   <div key={pago.id} className="flex items-center justify-between text-xs bg-white dark:bg-slate-900 p-2 rounded border border-slate-100 dark:border-slate-800 shadow-sm">
                                     <div>
-                                      <span className="font-semibold text-slate-700 dark:text-slate-200">{pago.fecha_pago ? new Date(pago.fecha_pago).toLocaleDateString() : 'N/A'}</span>
+                                      <span className="font-semibold text-slate-700 dark:text-slate-200">{mostrarFecha(pago.fecha_pago)}</span>
                                       <span className="mx-2 text-slate-400">|</span>
                                       <span className={`uppercase font-bold ${pago.tipo_pago === 'mensualidad' ? 'text-indigo-600' : pago.tipo_pago === 'hardware' ? 'text-purple-600' : 'text-emerald-600'}`}>
                                         {pago.tipo_pago || 'proyecto'}
@@ -625,13 +650,21 @@ export default function AdminProyectos() {
                               </label>
                             </div>
                             <div className="flex items-center gap-2">
+                              <input type="date" required className="px-2 py-1 border border-slate-300 rounded text-sm outline-none" value={fechaPagoNuevo} onChange={e => setFechaPagoNuevo(e.target.value)} title="Fecha de Pago" />
                               <input type="number" required placeholder="Monto" className="w-24 px-2 py-1 border border-slate-300 rounded text-sm outline-none" value={montoPago} onChange={e => setMontoPago(e.target.value)} />
                               <button type="submit" className="bg-emerald-600 text-white px-3 py-1 rounded text-sm font-bold shadow-sm hover:bg-emerald-700">Guardar</button>
                               <button type="button" onClick={() => setPagoMode(null)} className="text-slate-500 dark:text-slate-400 text-sm hover:text-slate-700 dark:text-slate-200">Cancelar</button>
                             </div>
                           </form>
                         ) : (
-                          <button onClick={() => {setPagoMode(proyecto.id); setMontoPago(proyecto.mensualidad); setTipoPago('mensualidad');}} className="px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg text-sm font-bold hover:bg-indigo-100 transition-colors whitespace-nowrap">
+                          <button onClick={() => {
+                            setPagoMode(proyecto.id); 
+                            setMontoPago(proyecto.mensualidad); 
+                            setTipoPago('mensualidad');
+                            const today = new Date();
+                            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                            setFechaPagoNuevo(todayStr);
+                          }} className="px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg text-sm font-bold hover:bg-indigo-100 transition-colors whitespace-nowrap">
                             Registrar Pago
                           </button>
                         )}

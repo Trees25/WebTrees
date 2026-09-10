@@ -30,11 +30,16 @@ export default function AdminPersonal() {
   const [beneficiarios, setBeneficiarios] = useState([]);
   const [proyectos, setProyectos] = useState([]);
   const [loading, setLoading] = useState(false);
+  // Utilities para sacar mes local y evitar bugs UTC
+  const dToday = new Date();
+  const defaultLocalMonth = `${dToday.getFullYear()}-${String(dToday.getMonth() + 1).padStart(2, '0')}`;
+
   const [nuevoPago, setNuevoPago] = useState({
     beneficiario_id: "",
     proyecto_id: "",
     monto: 0,
-    mes: new Date().toISOString().slice(0, 7), // YYYY-MM
+    mes: defaultLocalMonth, // YYYY-MM
+    fecha_pago: "",
   });
   const [pagosHistorico, setPagosHistorico] = useState([]);
   const [nuevoBenefMode, setNuevoBenefMode] = useState(false);
@@ -42,8 +47,9 @@ export default function AdminPersonal() {
   const [pagoEditando, setPagoEditando] = useState(null);
 
   // Estados para reparto de utilidades
-  const [mesReparto, setMesReparto] = useState(new Date().toISOString().slice(0, 7));
+  const [mesReparto, setMesReparto] = useState(defaultLocalMonth);
   const [datosReparto, setDatosReparto] = useState(null);
+  const [aplicarRetencion, setAplicarRetencion] = useState(true);
 
   const [filtroProyecto, setFiltroProyecto] = useState("");
   const [filtroBeneficiario, setFiltroBeneficiario] = useState("");
@@ -51,6 +57,62 @@ export default function AdminPersonal() {
   const [filtroTipo, setFiltroTipo] = useState("todos");
 
   const navigate = useNavigate();
+
+  // Helper functions for reliable local date rendering
+  const mostrarFecha = (fechaStr) => {
+    if (!fechaStr) return "N/A";
+    if (fechaStr.length === 10) {
+      const [y, m, d] = fechaStr.split('-');
+      return `${d}/${m}/${y}`;
+    }
+    if (fechaStr.endsWith('T00:00:00Z') || fechaStr.endsWith('T00:00:00+00:00')) {
+      const [y, m, d] = fechaStr.split('T')[0].split('-');
+      return `${d}/${m}/${y}`;
+    }
+    return new Date(fechaStr).toLocaleDateString();
+  };
+
+  const getFechaInput = (fechaStr) => {
+    if (!fechaStr) return "";
+    if (fechaStr.length === 10) return fechaStr;
+    if (fechaStr.endsWith('T00:00:00Z') || fechaStr.endsWith('T00:00:00+00:00')) {
+      return fechaStr.split('T')[0];
+    }
+    const d = new Date(fechaStr);
+    if (isNaN(d.getTime())) return "";
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  const combinarFechaConHoraActual = (fechaStringYMD) => {
+    if (!fechaStringYMD) return null;
+    const [year, month, day] = fechaStringYMD.split('-');
+    const d = new Date();
+    d.setFullYear(Number(year), Number(month) - 1, Number(day));
+    return d.toISOString();
+  };
+
+  const obtenerMesLocal = (fechaString) => {
+    if (!fechaString) return "Sin Fecha";
+    try {
+      if (fechaString.length === 10) {
+        const [y, m, d] = fechaString.split('-');
+        return `${y}-${m}`;
+      }
+      if (fechaString.endsWith('T00:00:00Z') || fechaString.endsWith('T00:00:00+00:00')) {
+        const parteFecha = fechaString.split('T')[0];
+        const [y, m, d] = parteFecha.split('-');
+        return `${y}-${m}`;
+      }
+      const d = new Date(fechaString);
+      if (isNaN(d.getTime())) return "Sin Fecha";
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      return `${year}-${month}`;
+    } catch (e) {
+      return "Sin Fecha";
+    }
+  };
+
   const { profile, loading: profileLoading } = useProfile();
 
   useEffect(() => {
@@ -63,7 +125,11 @@ export default function AdminPersonal() {
   useEffect(() => {
     if (profile?.empresa_id) {
       cargarBeneficiarios(tipoSeleccionado);
-      setNuevoPago(prev => ({ ...prev, beneficiario_id: "" }));
+      setNuevoPago(prev => ({ 
+        ...prev, 
+        beneficiario_id: "",
+        fecha_pago: getFechaInput(new Date().toISOString())
+      }));
       setNuevoBenefMode(false);
       setNuevoBenefNombre("");
     }
@@ -167,6 +233,9 @@ export default function AdminPersonal() {
         monto: nuevoPago.monto,
         mes: nuevoPago.mes
       };
+      if (nuevoPago.fecha_pago) {
+        payload.fecha_pago = combinarFechaConHoraActual(nuevoPago.fecha_pago);
+      }
       payload[confOriginal.id_field] = benef_final_id;
 
       const { error } = await supabase.from(confOriginal.tabla_pago).update(payload).eq("id", pagoEditando.id);
@@ -183,6 +252,9 @@ export default function AdminPersonal() {
         monto: nuevoPago.monto,
         mes: nuevoPago.mes
       };
+      if (nuevoPago.fecha_pago) {
+        payload.fecha_pago = combinarFechaConHoraActual(nuevoPago.fecha_pago);
+      }
       payload[conf.id_field] = benef_final_id;
 
       const { error } = await supabase.from(conf.tabla_pago).insert([payload]);
@@ -197,11 +269,14 @@ export default function AdminPersonal() {
   };
 
   const resetForm = () => {
+    const dNow = new Date();
+    const defaultMo = `${dNow.getFullYear()}-${String(dNow.getMonth() + 1).padStart(2, '0')}`;
     setNuevoPago({
       beneficiario_id: "",
       proyecto_id: "",
       monto: 0,
-      mes: new Date().toISOString().slice(0, 7)
+      mes: defaultMo,
+      fecha_pago: getFechaInput(dNow.toISOString())
     });
     setPagoEditando(null);
     setNuevoBenefMode(false);
@@ -226,7 +301,8 @@ export default function AdminPersonal() {
       beneficiario_id: pago.beneficiario_id,
       proyecto_id: pago.proyectos?.id || pago.proyecto_id || "",
       monto: pago.monto,
-      mes: pago.mes
+      mes: pago.mes,
+      fecha_pago: getFechaInput(pago.fecha_pago)
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -243,12 +319,9 @@ export default function AdminPersonal() {
     if (!profile?.empresa_id) return;
     setLoading(true);
     try {
-      // Calcular el mes anterior para sacar los datos
-      const [yearStr, monthStr] = mesReparto.split("-");
-      let dateAnterior = new Date(Number(yearStr), Number(monthStr) - 1 - 1, 1); // -1 porque es 0-indexed, -1 para mes anterior
-      const mesAnterior = dateAnterior.getFullYear() + "-" + String(dateAnterior.getMonth() + 1).padStart(2, '0');
+      const mesLiquidar = mesReparto; // ej: '2026-07'
 
-      // 1. Ingresos del mes ANTERIOR
+      // 1. Ingresos del mes SELECCIONADO
       const { data: proyData } = await supabase.from("proyectos").select("id").eq("empresa_id", profile.empresa_id);
       const proyIds = proyData?.map(p => p.id) || [];
       
@@ -257,12 +330,16 @@ export default function AdminPersonal() {
         const { data: pagosProy } = await supabase.from("pagos_proyectos").select("monto, fecha_pago").in("proyecto_id", proyIds);
         if (pagosProy) {
           totalIngresos = pagosProy
-            .filter(p => p.fecha_pago && p.fecha_pago.startsWith(mesAnterior))
+            .filter(p => {
+              if (!p.fecha_pago) return false;
+              const mesPago = obtenerMesLocal(p.fecha_pago);
+              return mesPago === mesLiquidar;
+            })
             .reduce((acc, p) => acc + Number(p.monto), 0);
         }
       }
 
-      // 2. Egresos del mes ANTERIOR (proveedores y apps)
+      // 2. Egresos del mes SELECCIONADO (proveedores y apps)
       let totalEgresos = 0;
       const gastosTipos = ["proveedor", "app"];
       for (const tipo of gastosTipos) {
@@ -270,7 +347,7 @@ export default function AdminPersonal() {
         const { data: entData } = await supabase.from(conf.tabla_entidad).select("id").eq("empresa_id", profile.empresa_id);
         const entIds = entData?.map(e => e.id) || [];
         if (entIds.length > 0) {
-          const { data: pagosGastos } = await supabase.from(conf.tabla_pago).select("monto").in(conf.id_field, entIds).eq("mes", mesAnterior);
+          const { data: pagosGastos } = await supabase.from(conf.tabla_pago).select("monto").in(conf.id_field, entIds).eq("mes", mesLiquidar);
           if (pagosGastos) {
             totalEgresos += pagosGastos.reduce((acc, p) => acc + Number(p.monto), 0);
           }
@@ -282,15 +359,21 @@ export default function AdminPersonal() {
       const devs = devsData || [];
       
       const utilidadesNetas = totalIngresos - totalEgresos;
-      const montoPorDev = devs.length > 0 ? (utilidadesNetas / devs.length) : 0;
+      const fondoEmpresa = aplicarRetencion ? (utilidadesNetas * 0.10) : 0;
+      const utilidadesARepartir = utilidadesNetas - fondoEmpresa;
+      
+      const montoPorDev = devs.length > 0 ? (utilidadesARepartir / devs.length) : 0;
       
       setDatosReparto({
         ingresos: totalIngresos,
         egresos: totalEgresos,
         utilidades: utilidadesNetas,
+        fondoEmpresa: fondoEmpresa,
+        utilidadesARepartir: utilidadesARepartir,
         devs: devs,
         montoPorDev: montoPorDev,
-        mesCalculado: mesAnterior
+        mesCalculado: mesLiquidar,
+        aplicoRetencion: aplicarRetencion
       });
       
     } catch (e) {
@@ -364,13 +447,19 @@ export default function AdminPersonal() {
             {/* Reparto de Utilidades */}
             <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-indigo-200 dark:border-indigo-800/50 bg-gradient-to-br from-white to-indigo-50/50 dark:from-slate-900 dark:to-indigo-950/30 transition-colors">
               <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-200 mb-2">Reparto Mensual (Desarrolladores)</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Elige el mes en que harás el pago. El sistema utilizará la recaudación y gastos del <strong>mes anterior</strong> para calcular la utilidad neta.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Seleccioná el mes a liquidar. El sistema sumará todos los ingresos y restará los gastos de ese <strong>mes exacto</strong> para calcular la ganancia neta y repartirla.</p>
               
-              <div className="flex gap-2 mb-4">
-                <input type="month" className="flex-1 px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none text-sm focus:ring-2 focus:ring-indigo-500/20" value={mesReparto} onChange={e => {setMesReparto(e.target.value); setDatosReparto(null);}} />
-                <button onClick={handleCalcularReparto} disabled={loading} className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg shadow-sm hover:bg-indigo-700 transition-all text-sm">
-                  Calcular
-                </button>
+              <div className="flex flex-col gap-2 mb-4">
+                <div className="flex gap-2">
+                  <input type="month" className="flex-1 px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none text-sm focus:ring-2 focus:ring-indigo-500/20" value={mesReparto} onChange={e => {setMesReparto(e.target.value); setDatosReparto(null);}} />
+                  <button onClick={handleCalcularReparto} disabled={loading} className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg shadow-sm hover:bg-indigo-700 transition-all text-sm">
+                    Calcular
+                  </button>
+                </div>
+                <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer mt-1 font-medium">
+                  <input type="checkbox" className="rounded text-indigo-600 focus:ring-indigo-500" checked={aplicarRetencion} onChange={(e) => {setAplicarRetencion(e.target.checked); setDatosReparto(null);}} />
+                  Aplicar retención del 10% para la empresa
+                </label>
               </div>
 
               {datosReparto && (
@@ -380,7 +469,22 @@ export default function AdminPersonal() {
                   </div>
                   <div className="flex justify-between mb-1 text-slate-600 dark:text-slate-300"><span>Ingresos del mes:</span> <span className="font-semibold text-emerald-600">${datosReparto.ingresos.toLocaleString()}</span></div>
                   <div className="flex justify-between mb-1 text-slate-600 dark:text-slate-300"><span>Gastos del mes (Prov/Apps):</span> <span className="font-semibold text-red-500">${datosReparto.egresos.toLocaleString()}</span></div>
-                  <div className="flex justify-between mb-3 text-slate-800 dark:text-slate-100 font-bold border-b pb-2"><span>Utilidad a repartir:</span> <span>${datosReparto.utilidades.toLocaleString()}</span></div>
+                  <div className="flex justify-between mb-2 text-slate-800 dark:text-slate-100 font-bold"><span>Balance Neto:</span> <span>${datosReparto.utilidades.toLocaleString()}</span></div>
+                  
+                  {datosReparto.aplicoRetencion ? (
+                    <>
+                      <div className="flex justify-between mb-1 text-amber-600 dark:text-amber-500 text-xs font-semibold border-t pt-2 mt-2">
+                        <span>Fondo Empresa (10% retenido):</span> <span>-${datosReparto.fondoEmpresa.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between mb-3 text-indigo-700 dark:text-indigo-400 font-bold border-b pb-2">
+                        <span>Utilidad real a repartir (90%):</span> <span>${datosReparto.utilidadesARepartir.toLocaleString()}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex justify-between mb-3 text-indigo-700 dark:text-indigo-400 font-bold border-t pt-2 border-b pb-2 mt-2">
+                      <span>Utilidad a repartir (100%):</span> <span>${datosReparto.utilidadesARepartir.toLocaleString()}</span>
+                    </div>
+                  )}
                   
                   <div className="flex justify-between mb-1 text-slate-600 dark:text-slate-300"><span>Total Desarrolladores:</span> <span className="font-bold">{datosReparto.devs.length}</span></div>
                   <div className="flex justify-between text-indigo-700 font-bold text-base mt-2">
@@ -481,8 +585,13 @@ export default function AdminPersonal() {
                     <input type="number" required min="1" className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none" value={nuevoPago.monto} onChange={e => setNuevoPago({...nuevoPago, monto: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Mes *</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Fecha de Pago</label>
+                    <input type="date" required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none text-sm" value={nuevoPago.fecha_pago} onChange={e => setNuevoPago({...nuevoPago, fecha_pago: e.target.value})} />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Mes asociado al pago *</label>
                     <input type="month" required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg outline-none text-sm" value={nuevoPago.mes} onChange={e => setNuevoPago({...nuevoPago, mes: e.target.value})} />
+                    <p className="text-[10px] text-slate-500 mt-1">El balance se calcula en base a este mes, independientemente de la fecha exacta de pago.</p>
                   </div>
                 </div>
                 
@@ -556,7 +665,7 @@ export default function AdminPersonal() {
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {pagosFiltrados.map((pago) => (
                       <tr key={`${pago.tipo}-${pago.id}`} className="hover:bg-slate-50 dark:bg-slate-950">
-                        <td className="py-3 px-4 text-sm text-slate-500 dark:text-slate-400">{new Date(pago.fecha_pago).toLocaleDateString()}</td>
+                        <td className="py-3 px-4 text-sm text-slate-500 dark:text-slate-400">{mostrarFecha(pago.fecha_pago)}</td>
                         <td className="py-3 px-4">
                           <span className="px-2 py-1 text-[10px] uppercase font-bold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
                             {CONFIG_TIPOS[pago.tipo]?.label}
